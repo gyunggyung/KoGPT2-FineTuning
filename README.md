@@ -33,6 +33,12 @@ parser.add_argument('--tmp_sent', type=str, default="사랑",
 					help="글의 시작 문장입니다.")
 ```
 
+### Colab
+Colab을 이용해서 generator를 실행할 수 있습니다.  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1qfL-IUp4k0uzkr_6SIaAmS_PA_Luvt1t#scrollTo=V1Iow6H0aRrw&uniqifier=4)
+
+![](img/colab.JPG)
+
 ## Citation
 ```
 @misc{KoGPT2-FineTuning,
