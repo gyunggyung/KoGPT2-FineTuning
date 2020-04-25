@@ -12,12 +12,10 @@ from kogpt2.model.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
 from util.data import NovelDataset
 import gluonnlp
 
-ctx= 'cpu'#'cuda' #'cpu' #학습 Device CPU or GPU. colab의 경우 GPU 사용
-cachedir='~/kogpt2/' # KoGPT-2 모델 다운로드 경로
-epoch =200  # 학습 epoch
+ctx= 'cuda'
+cachedir='~/kogpt2/'
 save_path = './checkpoint/'
 load_path = './checkpoint/KoGPT2_checkpoint_long.tar'
-#use_cuda = True # Colab내 GPU 사용을 위한 값
 
 pytorch_kogpt2 = {
 	'url':
@@ -68,12 +66,12 @@ vocab_b_obj = gluonnlp.vocab.BERTVocab.from_sentencepiece(vocab_path,
 													 bos_token='<s>',
 													 eos_token='</s>')
 
-
 def main():
 	tok_path = get_tokenizer()
 	model, vocab = kogpt2model, vocab_b_obj
 	tok = SentencepieceTokenizer(tok_path)
-	temperature = 0.7 # 중요하게 바꿔야 되는 부분
+	temperature = 0.7
+	top_p = 0.8
 	top_k = 40
 
 	while 1:
@@ -87,7 +85,7 @@ def main():
 		if len(toked) >1022:
 			break
 
-		sent = sample_sequence(model, tok, vocab, sent, input_size)
+		sent = sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top_k)
 
 		print(sent)
 

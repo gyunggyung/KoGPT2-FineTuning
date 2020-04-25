@@ -12,10 +12,8 @@ import gluonnlp
 from tqdm import tqdm
 import subprocess
 
-### 2.2. koGPT-2 Config
-
-ctx= 'cuda'#'cuda' #'cpu' #학습 Device CPU or GPU. colab의 경우 GPU 사용
-cachedir='~/kogpt2/' # KoGPT-2 모델 다운로드 경로
+ctx= 'cuda'
+cachedir='~/kogpt2/'
 epoch =200  # 학습 epoch
 save_path = 'checkpoint/'
 
@@ -56,7 +54,6 @@ def get_gpu_memory_map():
     gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
     return gpu_memory_map
 
-### 2.7. KoGPT-2 Transfer Laerning
 
 def main():
 	# download model
@@ -73,10 +70,9 @@ def main():
 	                       cachedir=cachedir)
 
 
-	### 2.4.KoGPT-2 Model Vocab
-
 	# KoGPT-2 언어 모델 학습을 위한 GPT2LMHeadModel 선언
 	kogpt2model = GPT2LMHeadModel(config=GPT2Config.from_dict(kogpt2_config))
+
 	# model_path로부터 다운로드 받은 내용을 load_state_dict으로 업로드
 	kogpt2model.load_state_dict(torch.load(model_path))
 
@@ -94,27 +90,21 @@ def main():
 	                                                     padding_token='<pad>',
 	                                                     bos_token='<s>',
 	                                                     eos_token='</s>')
-	### 2.5. Get Batch Data using DataLoader
 
 	tok_path = get_tokenizer()
 	model, vocab = kogpt2model, vocab_b_obj
 	sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
 
-	#os.chdir("../")
 	data_file_path = 'dataset/lyrics_dataset.txt'
-	batch_size = 8 # 이 부분을 수정하면 학습을 못하는건가?
+	batch_size = 8 # 배치사이즈 설정
 	novel_dataset = NovelDataset(data_file_path, vocab,sentencepieceTokenizer)
 	novel_data_loader = DataLoader(novel_dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
-
-	### 2.6. Learning rate, Loss function, Adam Optimizer
 
 	learning_rate = 1e-5
 	criterion = torch.nn.CrossEntropyLoss()
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-
-	## train 
-
+	## train
 	tok_path = get_tokenizer()
 	model, vocab = kogpt2model, vocab_b_obj
 	model = model.to(ctx)

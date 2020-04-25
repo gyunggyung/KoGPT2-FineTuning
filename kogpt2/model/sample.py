@@ -29,11 +29,7 @@ def top_p_logits(logits, top_p=0.0, filter_value=-float('Inf')):
     return logits
 
 
-def sample_sequence(model, tok, vocab, sent, input_size):
-    temperature = 0.7
-    top_p = 0.8
-    top_k = 40
-
+def sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top_k):
     toked = tok(sent)
     count = 0
     generated_text = ''
