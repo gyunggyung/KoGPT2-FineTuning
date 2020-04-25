@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader # 데이터로더
 from gluonnlp.data import SentencepieceTokenizer 
 from kogpt2.utils import get_tokenizer
 from kogpt2.utils import download, tokenizer
-from kogpt2.model.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
+from kogpt2.model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
 from util.data import NovelDataset
 import gluonnlp
 from tqdm import tqdm

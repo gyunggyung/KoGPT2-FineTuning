@@ -1,4 +1,6 @@
 # KoGPT2-FineTuning
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1qfL-IUp4k0uzkr_6SIaAmS_PA_Luvt1t#scrollTo=V1Iow6H0aRrw&uniqifier=4)
+
 SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 사용했습니다. 첫 번째로 가사 작사를 위해서, 정제된 한국어 가사 데이터 62MB를 Fine-tuning 한 결과물입니다. 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. checkpoint는 [구글 드라이브](https://drive.google.com/drive/folders/18CRYESHHE897CIaodZj0m96tAI6Vk5wX)에서 확인 할 수 있습니다.
 
 ## Fine Tuning
@@ -29,3 +31,7 @@ parser.add_argument('--tmp_sent', type=str, default="사랑",
 
 ## Output
 자세한 결과물은 [samples](https://github.com/gyunggyung/KoGPT2-FineTuning/tree/master/samples)에서 확인 할 수 있습니다.
+
+## 참고
+> https://github.com/SKT-AI/KoGPT2  
+> https://github.com/shbictai/narrativeKoGPT2
