@@ -50,4 +50,6 @@ parser.add_argument('--tmp_sent', type=str, default="사랑",
 
 ## Reference
 > https://github.com/SKT-AI/KoGPT2  
-> https://github.com/shbictai/narrativeKoGPT2
+> https://github.com/shbictai/narrativeKoGPT2  
+> https://github.com/likejazz/korean-sentence-splitter  
+> https://github.com/ssut/py-hanspell
