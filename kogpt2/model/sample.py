@@ -30,7 +30,7 @@ def top_p_logits(logits, top_p=0.0, filter_value=-float('Inf')):
 
 
 def sample_sequence(model, tok, vocab, sent, input_size):
-    temperature = 0.7  # 중요하게 바꿔야 되는 부분
+    temperature = 0.7
     top_p = 0.8
     top_k = 40
 
