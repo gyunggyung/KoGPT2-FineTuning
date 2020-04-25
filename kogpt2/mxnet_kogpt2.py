@@ -18,35 +18,28 @@ import os
 import sys
 
 import gluonnlp as nlp
+import mxnet as mx
 import requests
-import torch
 
-from .model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
+from .model.gpt import GPT2Model as MXGPT2Model
 from .utils import download as _download
 from .utils import tokenizer
 
-pytorch_kogpt2 = {
+mxnet_kogpt2 = {
     'url':
-    'https://kobert.blob.core.windows.net/models/kogpt2/pytorch/pytorch_kogpt2_676e9bcfa7.params',
-    'fname': 'pytorch_kogpt2_676e9bcfa7.params',
-    'chksum': '676e9bcfa7'
-}
-
-kogpt2_config = {
-    "initializer_range": 0.02,
-    "layer_norm_epsilon": 1e-05,
-    "n_ctx": 1024,
-    "n_embd": 768,
-    "n_head": 12,
-    "n_layer": 12,
-    "n_positions": 1024,
-    "vocab_size": 50000
+    'https://kobert.blob.core.windows.net/models/kogpt2/mxnet/mxnet_kogpt2_9250bedc00.params',
+    'fname': 'mxnet_kogpt2_9250bedc00.params',
+    'chksum': '9250bedc00'
 }
 
 
-def get_pytorch_kogpt2_model(ctx='cpu', cachedir='~/kogpt2/'):
+def get_mxnet_kogpt2_model(use_pooler=True,
+                           use_decoder=True,
+                           use_classifier=True,
+                           ctx=mx.cpu(0),
+                           cachedir='~/kogpt2/'):
     # download model
-    model_info = pytorch_kogpt2
+    model_info = mxnet_kogpt2
     model_path = _download(model_info['url'],
                            model_info['fname'],
                            model_info['chksum'],
@@ -60,12 +53,9 @@ def get_pytorch_kogpt2_model(ctx='cpu', cachedir='~/kogpt2/'):
     return get_kogpt2_model(model_path, vocab_path, ctx)
 
 
-def get_kogpt2_model(model_file, vocab_file, ctx="cpu"):
-    kogpt2model = GPT2LMHeadModel(config=GPT2Config.from_dict(kogpt2_config))
-    kogpt2model.load_state_dict(torch.load(model_file))
-    device = torch.device(ctx)
-    kogpt2model.to(device)
-    kogpt2model.eval()
+def get_kogpt2_model(model_file,
+                     vocab_file,
+                     ctx=mx.cpu(0)):
     vocab_b_obj = nlp.vocab.BERTVocab.from_sentencepiece(vocab_file,
                                                          mask_token=None,
                                                          sep_token=None,
@@ -74,4 +64,11 @@ def get_kogpt2_model(model_file, vocab_file, ctx="cpu"):
                                                          padding_token='<pad>',
                                                          bos_token='<s>',
                                                          eos_token='</s>')
-    return kogpt2model, vocab_b_obj
+    mxmodel = MXGPT2Model(units=768,
+                          max_length=1024,
+                          num_heads=12,
+                          num_layers=12,
+                          dropout=0.1,
+                          vocab_size=len(vocab_b_obj))
+    mxmodel.load_parameters(model_file, ctx=ctx)
+    return (mxmodel, vocab_b_obj)

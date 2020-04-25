@@ -4,7 +4,7 @@ from gluonnlp.data import SentencepieceTokenizer
 from kogpt2.model.sample import sample_sequence
 from kogpt2.utils import get_tokenizer
 from kogpt2.utils import download, tokenizer
-from kogpt2.model.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
+from kogpt2.model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
 import gluonnlp
 import argparse
 

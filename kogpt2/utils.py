@@ -20,7 +20,7 @@ import hashlib
 
 tokenizer = {
     'url':
-    'checkpoint/kogpt2_news_wiki_ko_cased_818bfa919d.spiece',
+    'https://kobert.blob.core.windows.net/models/kogpt2/tokenizer/kogpt2_news_wiki_ko_cased_818bfa919d.spiece',
     'fname': 'kogpt2_news_wiki_ko_cased_818bfa919d.spiece',
     'chksum': '818bfa919d'
 }

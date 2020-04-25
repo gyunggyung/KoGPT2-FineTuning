@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """PyTorch OpenAI GPT-2 model."""
-# https://github.com/huggingface/transformers/blob/master/src/transformers/modeling_gpt2.py
+
 
 import logging
 import math
@@ -28,6 +28,7 @@ from torch.nn.functional import gelu
 from transformers.configuration_gpt2 import GPT2Config
 from transformers.file_utils import add_start_docstrings
 from transformers.modeling_utils import Conv1D, PreTrainedModel, SequenceSummary, prune_conv1d_layer
+
 
 logger = logging.getLogger(__name__)
 
@@ -592,11 +593,7 @@ class GPT2LMHeadModel(GPT2PreTrainedModel):
         if labels is not None:
             # Shift so that tokens < n predict n
             shift_logits = lm_logits[..., :-1, :].contiguous()
-            # print('shift_logits {}'.format(shift_logits))
-
             shift_labels = labels[..., 1:].contiguous()
-            # print('shift_labels {}'.format(shift_labels))
-
             # Flatten the tokens
             loss_fct = CrossEntropyLoss()
             loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
@@ -649,7 +646,7 @@ class GPT2DoubleHeadsModel(GPT2PreTrainedModel):
             of shape ``(batch_size, sequence_length, hidden_size)``:
             Hidden-states of the model at the output of each layer plus the initial embedding outputs.
         **attentions**: (`optional`, returned when ``config.output_attentions=True``)
-            list of ``torch.FloatTe로nsor`` (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``:
+            list of ``torch.FloatTensor`` (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``:
             Attentions weights after the attention softmax, used to compute the weighted average in the self-attention heads.
 
     Examples::
@@ -681,7 +678,7 @@ class GPT2DoubleHeadsModel(GPT2PreTrainedModel):
         super().__init__(config)
         config.num_labels = 1
         self.transformer = GPT2Model(config)
-        self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False) #(n_embd, vocab_size)
+        self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
         self.multiple_choice_head = SequenceSummary(config)
 
         self.init_weights()
@@ -714,8 +711,8 @@ class GPT2DoubleHeadsModel(GPT2PreTrainedModel):
 
         hidden_states = transformer_outputs[0]
 
-        lm_logits = self.lm_head(hidden_states) # Language Model Head
-        mc_logits = self.multiple_choice_head(hidden_states, mc_token_ids).squeeze(-1) # Multiple Classification Head
+        lm_logits = self.lm_head(hidden_states)
+        mc_logits = self.multiple_choice_head(hidden_states, mc_token_ids).squeeze(-1)
 
         outputs = (lm_logits, mc_logits) + transformer_outputs[1:]
         if mc_labels is not None:
