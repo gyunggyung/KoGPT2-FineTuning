@@ -8,7 +8,7 @@ from kogpt2.model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
 import gluonnlp
 
 def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1,
-		 load_path = './checkpoint/KoGPT2_checkpoint_long.tar', ctx= 'cuda',cachedir='~/kogpt2/'):
+		 load_path = './checkpoint/KoGPT2_checkpoint_long.tar', ctx= 'cuda',cachedir='~/kogpt2/', samples="gdrive/drive/My Drive/KoGPT2-FineTuning/samples"):
 	# download model
 
 	pytorch_kogpt2 = {
@@ -81,11 +81,11 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 
 		print(sent)
 
-		#now = [int(n) for n in os.listdir("./samples")]
-		#now = max(now)
-		#f = open("./samples/" + str(now + 1), 'w', encoding="utf-8")
-		#f.write(sent)
-		#f.close()
+		now = [int(n) for n in os.listdir(samples)]
+		now = max(now)
+		f = open(samples + str(now + 1), 'w', encoding="utf-8")
+		f.write(sent)
+		f.close()
 
 		if num:
 			num += 1
