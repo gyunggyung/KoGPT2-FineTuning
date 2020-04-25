@@ -13,16 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
-import requests
-import hashlib
-
 import torch
-
 from kogpt2.model.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
 import gluonnlp as nlp
-
 from .utils import download as _download
 from .utils import tokenizer
 

@@ -1,15 +1,8 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
-from torch.utils.data import TensorDataset # 텐서데이터셋
-from torch.utils.data import Dataset,DataLoader # 데이터로더
-
+from torch.utils.data import Dataset
 from kogpt2.utils import download, tokenizer, get_tokenizer
 from gluonnlp.data import SentencepieceTokenizer
 import gluonnlp
 import numpy as np
-import os
 
 
 def sentencePieceTokenizer():
@@ -70,7 +63,7 @@ class NovelDataset(Dataset):
       now = now + "\n" + line
     # if len(line) > 1023:
     #   line = line[1023:]
-    #이거는 한줄단위인데;; 이 부분을 한 
+    #이거는 한줄단위인데;; 이 부분을 한
     #while 1:
     #  if line == "<|endoftext|>":
     #    break
@@ -86,7 +79,6 @@ class NovelDataset(Dataset):
 
       ### 여기부터는 그대로
       index_of_words = [vocab[vocab.bos_token],] + vocab[toeknized_line]+ [vocab[vocab.eos_token]]
-      # print(np.shape(index_of_words))
       self.data.append(index_of_words)
 
     print(np.shape(self.data))
@@ -97,38 +89,4 @@ class NovelDataset(Dataset):
     return len(self.data)
   def __getitem__(self,index):
     item = self.data[index]
-    # print(item)
     return item
-#
-# cachedir='~/kogpt2/'
-# print(os.getcwd())
-# os.chdir("../")
-# file_path = './data/backmyo_novel_1/untokenized_bm_data.txt'
-#
-# vocab_info = tokenizer
-# vocab_path = download(vocab_info['url'],
-#                        vocab_info['fname'],
-#                        vocab_info['chksum'],
-#                        cachedir=cachedir)
-# vocab = gluonnlp.vocab.BERTVocab.from_sentencepiece(vocab_path,
-#                                                      mask_token=None,
-#                                                      sep_token=None,
-#                                                      cls_token=None,
-#                                                      unknown_token='<unk>',
-#                                                      padding_token='<pad>',
-#                                                      bos_token='<s>',
-#                                                      eos_token='</s>')
-# tok_path = get_tokenizer()
-# sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
-#
-# novel_dataset = NovelDataset(file_path, vocab,sentencepieceTokenizer)
-#
-# novel_data_loader = DataLoader(novel_dataset, batch_size=128, shuffle=True)
-#
-# count = 0
-# for data in novel_data_loader:
-#     if count == 0:
-#       # print('No. %s ' %(count) +' data {}'.format(data))
-#       for d in data:
-#         print(d)
-#     count = count+1

@@ -1,15 +1,10 @@
 import os
-import sys
-import random
 import torch
-import torch.nn.functional as F
-from torch.utils.data import DataLoader # 데이터로더
 from gluonnlp.data import SentencepieceTokenizer
 from kogpt2.model.sample import sample_sequence
 from kogpt2.utils import get_tokenizer
 from kogpt2.utils import download, tokenizer
 from kogpt2.model.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
-from util.data import NovelDataset
 import gluonnlp
 
 ctx= 'cuda'
@@ -82,12 +77,17 @@ def main():
 		toked = tok(sent)
 		input_size = 1022 # 이 부분을 바꾸면 수정 가능 문자 길이
 
-		if len(toked) >1022:
+		if len(toked) > 1022:
 			break
 
 		sent = sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top_k)
 
 		print(sent)
+		now = [int(n) for n in os.listdir("./samples")]
+		now = max(now)
+		f = open("samples/" + str(now + 1), 'w', encoding="utf-8")
+		f.write(sent)
+		f.close()
 
 
 if __name__ == "__main__":

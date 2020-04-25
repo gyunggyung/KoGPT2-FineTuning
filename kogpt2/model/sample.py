@@ -1,9 +1,5 @@
 import torch
-import numpy as np
-from kogpt2.utils import get_tokenizer
-from gluonnlp.data import SentencepieceTokenizer
 import torch.nn.functional as F
-import sys
 
 def top_k_logits(logits, k):
     if k == 0:

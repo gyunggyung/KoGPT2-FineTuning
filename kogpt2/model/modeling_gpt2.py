@@ -29,7 +29,6 @@ from transformers.configuration_gpt2 import GPT2Config
 from transformers.file_utils import add_start_docstrings
 from transformers.modeling_utils import Conv1D, PreTrainedModel, SequenceSummary, prune_conv1d_layer
 
-
 logger = logging.getLogger(__name__)
 
 GPT2_PRETRAINED_MODEL_ARCHIVE_MAP = {
