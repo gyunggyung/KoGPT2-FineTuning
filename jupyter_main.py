@@ -9,46 +9,7 @@ import gluonnlp
 from kogpt2.model.sample import sample_sequence
 from tqdm import tqdm
 import subprocess
-import generator
 import os
-
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--epoch', type=int, default=200,
-					help="epoch 를 통해서 학습 범위를 조절합니다.")
-parser.add_argument('--save_path', type=str, default='./checkpoint/',
-					help="학습 결과를 저장하는 경로입니다.")
-parser.add_argument('--load_path', type=str, default='./checkpoint/KoGPT2_checkpoint_long.tar',
-					help="학습된 결과를 불러오는 경로입니다.")
-parser.add_argument('--samples', type=str, default="samples/",
-					help="학습된 결과를 불러오는 경로입니다.")
-parser.add_argument('--data_file_path', type=str, default='dataset/lyrics_dataset.txt',
-					help="학습된 결과를 불러오는 경로입니다.")
-parser.add_argument('--batch_size', type=int, default=8,
-					help="batch_size 를 지정합니다.")
-args = parser.parse_args()
-
-ctx = 'cuda'
-cachedir = '~/kogpt2/'
-
-pytorch_kogpt2 = {
-	'url':
-	'checkpoint/pytorch_kogpt2_676e9bcfa7.params',
-	'fname': 'pytorch_kogpt2_676e9bcfa7.params',
-	'chksum': '676e9bcfa7'
-}
-kogpt2_config = {
-	"initializer_range": 0.02,
-	"layer_norm_epsilon": 1e-05,
-	"n_ctx": 1024,
-	"n_embd": 768,
-	"n_head": 12,
-	"n_layer": 12,
-	"n_positions": 1024,
-	"vocab_size": 50000
-}
-
 
 def get_gpu_memory_map():
 	"""Get the current gpu usage.
@@ -69,8 +30,27 @@ def get_gpu_memory_map():
 	gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
 	return gpu_memory_map
 
+def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoGPT2_checkpoint_long.tar',
+		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8):
+	ctx = 'cuda'
+	cachedir = '~/kogpt2/'
 
-def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
+	pytorch_kogpt2 = {
+		'url': 'https://kobert.blob.core.windows.net/models/kogpt2/pytorch/pytorch_kogpt2_676e9bcfa7.params',
+		'fname': 'pytorch_kogpt2_676e9bcfa7.params',
+		'chksum': '676e9bcfa7'
+	}
+	kogpt2_config = {
+		"initializer_range": 0.02,
+		"layer_norm_epsilon": 1e-05,
+		"n_ctx": 1024,
+		"n_embd": 768,
+		"n_head": 12,
+		"n_layer": 12,
+		"n_positions": 1024,
+		"vocab_size": 50000
+	}
+
 	# download model
 	model_info = pytorch_kogpt2
 	model_path = download(model_info['url'],
@@ -153,15 +133,9 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
 			# generator 진행
 			if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
-				sent = sample_sequence(model, tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
+				sent = sample_sequence(model, tok, vocab, sent="사랑", input_size=100, temperature=0.7, top_p=0.8, top_k=40)
 
 				print(sent)
-
-				now = [int(n) for n in os.listdir(samples)]
-				now = max(now)
-				f = open(samples + str(now + 1), 'w', encoding="utf-8")
-				f.write(sent)
-				f.close()
 			#########################################
 			if (count > 0 and count % 10000 == 0) or (len(data) < batch_size):
 				# 모델 저장
@@ -175,15 +149,4 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 					}, save_path+ 'KoGPT2_checkpoint_' + count + '.tar')
 				except:
 					pass
-		count += 1
-
-if __name__ == "__main__":
-	# execute only if run as a script
-	epoch = args.epoch  # 학습 epoch
-	save_path = args.save_path
-	load_path = args.load_path
-	samples = args.samples
-	data_file_path = args.data_file_path
-	batch_size = args.batch_size
-
-	main(epoch, save_path, load_path, data_file_path, batch_size)
+			count += 1

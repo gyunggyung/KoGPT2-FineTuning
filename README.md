@@ -9,9 +9,27 @@ SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](htt
 
 ## Fine Tuning
 ```
-python main.py
+python main.py --epoch=200 --data_file_path='dataset/lyrics_dataset.txt' --save_path='./checkpoint/' --load_path='./checkpoint/KoGPT2_checkpoint_long.tar' --batch_size=8
 ```
 
+### parser
+``` python
+parser.add_argument('--epoch', type=int, default=200,
+					help="epoch 를 통해서 학습 범위를 조절합니다.")
+parser.add_argument('--save_path', type=str, default='./checkpoint/',
+					help="학습 결과를 저장하는 경로입니다.")
+parser.add_argument('--load_path', type=str, default='./checkpoint/KoGPT2_checkpoint_long.tar',
+					help="학습된 결과를 불러오는 경로입니다.")
+```
+
+### Colab
+Colab을 이용해서 Fine-tuning Code를 실행할 수 있습니다.  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1x49fRFi-pgW_P8_Av5fCyYVPvT_9btai#scrollTo=bWl5Z0fmbqeU)
+
+### GPU Memory Check
+```
+nvidia-smi.exe
+```
 ## generator
 ```
 python generator.py --temperature=0.9 --text_size=500 --tmp_sent="가자" --loops=5
