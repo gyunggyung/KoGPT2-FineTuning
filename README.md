@@ -7,8 +7,20 @@ python main.py
 ```
 
 ## generator
+``` python
+python generator.py --temperature=0.9 --input_size=500 --tmp_sent="가자" --loops=5
 ```
-python generator.py
+
+### args
+``` python
+parser = argparse.ArgumentParser()
+parser.add_argument('--temperature', type=float, default=0.7, help="temperature 를 통해서 글의 창의성을 조절합니다.")
+parser.add_argument('--top_p', type=float, default=0.9, help="top_p 를 통해서 글의 창의성을 조절합니다.")
+parser.add_argument('--top_k', type=int, default=40, help="top_k 를 통해서 글의 창의성을 조절합니다.")
+parser.add_argument('--input_size', type=int, default=250, help="글의 길이를 조정합니다.")
+parser.add_argument('--loops', type=int, default=-1, help="글을 몇 번 반복할지 지정합니다. -1은 무한반복입니다.")
+parser.add_argument('--tmp_sent', type=str, default="사랑", help="글의 시작 문장입니다.")
+args = parser.parse_args()
 ```
 
 ### setting
