@@ -81,11 +81,11 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 
 		print(sent)
 
-		now = [int(n) for n in os.listdir("./samples")]
-		now = max(now)
-		f = open("./samples/" + str(now + 1), 'w', encoding="utf-8")
-		f.write(sent)
-		f.close()
+		#now = [int(n) for n in os.listdir("./samples")]
+		#now = max(now)
+		#f = open("./samples/" + str(now + 1), 'w', encoding="utf-8")
+		#f.write(sent)
+		#f.close()
 
 		if num:
 			num += 1

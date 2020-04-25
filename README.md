@@ -33,7 +33,19 @@ parser.add_argument('--tmp_sent', type=str, default="사랑",
 					help="글의 시작 문장입니다.")
 ```
 
-## Output
+## Citation
+```
+@misc{KoGPT2-FineTuning,
+  author = {gyung},
+  title = {KoGPT2-FineTuning},
+  year = {2020},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/gyunggyung/KoGPT2-FineTuning}},
+}
+```
+
+## Reference
 자세한 결과물은 [samples](https://github.com/gyunggyung/KoGPT2-FineTuning/tree/master/samples)에서 확인 할 수 있습니다.
 
 ## 참고
