@@ -8,7 +8,6 @@ import numpy as np
 def sentencePieceTokenizer():
   tok_path = get_tokenizer()
   sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
-
   return sentencepieceTokenizer
 
 
@@ -87,6 +86,7 @@ class NovelDataset(Dataset):
 
   def __len__(self):
     return len(self.data)
+
   def __getitem__(self,index):
     item = self.data[index]
     return item

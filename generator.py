@@ -9,12 +9,18 @@ import gluonnlp
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--temperature', type=float, default=0.7, help="temperature 를 통해서 글의 창의성을 조절합니다.")
-parser.add_argument('--top_p', type=float, default=0.9, help="top_p 를 통해서 글의 창의성을 조절합니다.")
-parser.add_argument('--top_k', type=int, default=40, help="top_k 를 통해서 글의 창의성을 조절합니다.")
-parser.add_argument('--input_size', type=int, default=250, help="글의 길이를 조정합니다.")
-parser.add_argument('--loops', type=int, default=-1, help="글을 몇 번 반복할지 지정합니다. -1은 무한반복입니다.")
-parser.add_argument('--tmp_sent', type=str, default="사랑", help="글의 시작 문장입니다.")
+parser.add_argument('--temperature', type=float, default=0.7,
+					help="temperature 를 통해서 글의 창의성을 조절합니다.")
+parser.add_argument('--top_p', type=float, default=0.9,
+					help="top_p 를 통해서 글의 표현 범위를 조절합니다.")
+parser.add_argument('--top_k', type=int, default=40,
+					help="top_k 를 통해서 글의 표현 범위를 조절합니다.")
+parser.add_argument('--text_size', type=int, default=250,
+					help="결과물의 길이를 조정합니다.")
+parser.add_argument('--loops', type=int, default=-1,
+					help="글을 몇 번 반복할지 지정합니다. -1은 무한반복입니다.")
+parser.add_argument('--tmp_sent', type=str, default="사랑",
+					help="글의 시작 문장입니다.")
 args = parser.parse_args()
 
 ctx= 'cuda'
@@ -28,6 +34,7 @@ pytorch_kogpt2 = {
 	'fname': 'pytorch_kogpt2_676e9bcfa7.params',
 	'chksum': '676e9bcfa7'
 }
+
 kogpt2_config = {
 	"initializer_range": 0.02,
 	"layer_norm_epsilon": 1e-05,
@@ -40,7 +47,7 @@ kogpt2_config = {
 }
 
 
-def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", input_size = 100, loops = -1):
+def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1):
 	# download model
 	model_info = pytorch_kogpt2
 	model_path = download(model_info['url'],
@@ -91,7 +98,7 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", input_size =
 		if len(toked) > 1022:
 			break
 
-		sent = sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top_k)
+		sent = sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_k)
 
 		print(sent)
 
@@ -109,5 +116,4 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", input_size =
 
 if __name__ == "__main__":
 	# execute only if run as a script
-	main(temperature=args.temperature, top_p=args.top_p, top_k=args.top_k, tmp_sent=args.tmp_sent, input_size=args.input_size, loops=args.loops+1)
-	#main(temperature=temperature, top_p=top_p, top_k=top_k)
+	main(temperature=args.temperature, top_p=args.top_p, top_k=args.top_k, tmp_sent=args.tmp_sent, text_size=args.text_size, loops=args.loops+1)
