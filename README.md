@@ -23,8 +23,11 @@ parser.add_argument('--load_path', type=str, default='./checkpoint/KoGPT2_checkp
 ```
 
 ### Colab
-Colab을 이용해서 Fine-tuning Code를 실행할 수 있습니다.  
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1x49fRFi-pgW_P8_Av5fCyYVPvT_9btai#scrollTo=bWl5Z0fmbqeU)
+
+Colab을 이용해서 Fine-tuning Code를 실행할 수 있습니다.  
+
+![](img/colab_main.JPG)
 
 ### GPU Memory Check
 ```
@@ -52,10 +55,11 @@ parser.add_argument('--tmp_sent', type=str, default="사랑",
 ```
 
 ### Colab
-Colab을 이용해서 generator를 실행할 수 있습니다.  
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1qfL-IUp4k0uzkr_6SIaAmS_PA_Luvt1t#scrollTo=V1Iow6H0aRrw&uniqifier=4)
 
-![](img/colab.JPG)
+Colab을 이용해서 generator를 실행할 수 있습니다.  
+
+![](img/colab_generator.JPG)
 
 ## Citation
 ```

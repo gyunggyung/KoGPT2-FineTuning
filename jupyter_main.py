@@ -133,8 +133,8 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
 			# generator 진행
 			if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
-				sent = sample_sequence(model, tok, vocab, sent="사랑", input_size=100, temperature=0.7, top_p=0.8, top_k=40)
-
+				#sent = sample_sequence(model, tok, vocab, sent="사랑", input_size=100, temperature=0.7, top_p=0.8, top_k=40).to(ctx)
+				sent = "good"
 				print(sent)
 			#########################################
 			if (count > 0 and count % 10000 == 0) or (len(data) < batch_size):
@@ -146,7 +146,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 						'model_state_dict': model.state_dict(),
 						'optimizer_state_dict': optimizer.state_dict(),
 						'loss':loss
-					}, save_path+ 'KoGPT2_checkpoint_' + count + '.tar')
+					}, save_path + 'KoGPT2_checkpoint_' + count + '.tar')
 				except:
 					pass
 			count += 1
