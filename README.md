@@ -1,6 +1,6 @@
 # KoGPT2-FineTuning
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1qfL-IUp4k0uzkr_6SIaAmS_PA_Luvt1t#scrollTo=V1Iow6H0aRrw&uniqifier=4)
-[![license Apache-2.0](https://img.shields.io/badge/license-Apache-2.0-red.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
+[![license Apache-2.0](https://img.shields.io/badge/license-Apache2.0-red.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 
 [![GitHub stars](https://img.shields.io/github/stars/gyunggyung/KoGPT2-FineTuning?style=social)](https://github.com/gyunggyung/KoGPT2-FineTuning)
