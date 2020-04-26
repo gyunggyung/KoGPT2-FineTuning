@@ -4,7 +4,7 @@ from gluonnlp.data import SentencepieceTokenizer
 from kogpt2.utils import get_tokenizer
 from kogpt2.utils import download, tokenizer
 from kogpt2.model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
-from util.data import NovelDataset
+from util.data import Read_Dataset
 import gluonnlp
 from kogpt2.model.sample import sample_sequence
 from tqdm import tqdm
@@ -98,8 +98,8 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	model, vocab = kogpt2model, vocab_b_obj
 	sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
 
-	novel_dataset = NovelDataset(data_file_path, vocab,sentencepieceTokenizer)
-	novel_data_loader = DataLoader(novel_dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
+	dataset = Read_Dataset(data_file_path, vocab,sentencepieceTokenizer)
+	data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
 
 	learning_rate = 3e-5
 	criterion = torch.nn.CrossEntropyLoss()
@@ -115,7 +115,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	avg_loss = (0.0, 0.0)
 	for epoch in range(epoch):
 		count = 0
-		for data in novel_data_loader:
+		for data in data_loader:
 			optimizer.zero_grad()
 			data = torch.stack(data) # list of Tensor로 구성되어 있기 때문에 list를 stack을 통해 변환해준다.
 			data = data.transpose(1,0)
@@ -133,7 +133,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
 			# generator 진행
 			if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
-				#sent = sample_sequence(model, tok, vocab, sent="사랑", input_size=100, temperature=0.7, top_p=0.8, top_k=40).to(ctx)
+				sent = sample_sequence(model, tok, vocab, sent="사랑", input_size=100, temperature=0.7, top_p=0.8, top_k=40).to(ctx)
 				sent = "good"
 				print(sent)
 			#########################################
@@ -146,7 +146,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 						'model_state_dict': model.state_dict(),
 						'optimizer_state_dict': optimizer.state_dict(),
 						'loss':loss
-					}, save_path + 'KoGPT2_checkpoint_' + count + '.tar')
+					}, save_path+ 'KoGPT2_checkpoint_' + count + '.tar')
 				except:
 					pass
 			count += 1
