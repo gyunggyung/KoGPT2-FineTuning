@@ -61,7 +61,7 @@ Colab을 이용해서 generator를 실행할 수 있습니다.
 ![](img/colab_generator.JPG)
 
 ## tensorboard
-[tensorboard](http://localhost:6006/)로 접근하여, loss와 변하는 text를 확인합니다.
+학습에 따른 변화를 확인하기 위해서, [tensorboard](http://localhost:6006/)로 접근하여 loss와 text를 확인합니다.
 
 ```
 tensorboard --logdir=runs
