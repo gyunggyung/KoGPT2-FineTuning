@@ -66,9 +66,8 @@ tensorboard --logdir=runs
 ```
 
 ![](tensorboard.JPG)
-
-```
 ## Citation
+```
 @misc{KoGPT2-FineTuning,
   author = {gyung},
   title = {KoGPT2-FineTuning},
