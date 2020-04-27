@@ -11,6 +11,7 @@ from tqdm import tqdm
 import subprocess
 import generator
 import os
+from tensorboardX import SummaryWriter
 
 import argparse
 
@@ -19,7 +20,7 @@ parser.add_argument('--epoch', type=int, default=200,
 					help="epoch 를 통해서 학습 범위를 조절합니다.")
 parser.add_argument('--save_path', type=str, default='./checkpoint/',
 					help="학습 결과를 저장하는 경로입니다.")
-parser.add_argument('--load_path', type=str, default='./checkpoint/KoGPT2_checkpoint_long.tar',
+parser.add_argument('--load_path', type=str, default='', #./checkpoint/KoGPT2_checkpoint_long.tar
 					help="학습된 결과를 불러오는 경로입니다.")
 parser.add_argument('--samples', type=str, default="samples/",
 					help="학습된 결과를 불러오는 경로입니다.")
@@ -71,6 +72,8 @@ def get_gpu_memory_map():
 
 
 def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
+	summary = SummaryWriter()
+
 	# download model
 	model_info = pytorch_kogpt2
 	model_path = download(model_info['url'],
@@ -90,11 +93,12 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 	# model_path 로부터 다운로드 받은 내용을 load_state_dict 으로 업로드
 	kogpt2model.load_state_dict(torch.load(model_path))
 
+
 	device = torch.device(ctx)
 	kogpt2model.to(device)
 
 	# 불러오기 부분
-	if load_path:
+	try:
 		checkpoint = torch.load(load_path, map_location=device)
 
 		# KoGPT-2 언어 모델 학습을 위한 GPT2LMHeadModel 선언
@@ -102,6 +106,8 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 		kogpt2model.load_state_dict(checkpoint['model_state_dict'])
 
 		kogpt2model.eval()
+	except:
+		pass
 
 	# 추가로 학습하기 위해 .train() 사용
 	kogpt2model.train()
@@ -133,13 +139,23 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 
 	print('KoGPT-2 Transfer Learning Start')
 	avg_loss = (0.0, 0.0)
+	count = 0
+
+	torch.save({
+		'epoch': epoch,
+		'train_no': count,
+		'model_state_dict': model.state_dict(),
+		'optimizer_state_dict': optimizer.state_dict(),
+		'loss': 0
+	}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
+
 	for epoch in range(epoch):
-		count = 0
 		for data in data_loader:
 			optimizer.zero_grad()
 			data = torch.stack(data) # list of Tensor로 구성되어 있기 때문에 list를 stack을 통해 변환해준다.
 			data = data.transpose(1,0)
 			data = data.to(ctx)
+			model = model.to(ctx)
 
 			outputs = model(data, labels=data)
 			loss, logits = outputs[:2]
@@ -149,19 +165,22 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 			optimizer.step()
 			if count % 10 == 0:
 				print('epoch no.{0} train no.{1}  loss = {2:.5f} avg_loss = {3:.5f}' . format(epoch, count, loss, avg_loss[0] / avg_loss[1]))
-				# torch.save(model,save_path+'checkpoint_{}_{}.tar'.format(epoch,count))
+				summary.add_scalar('loss/avg_loss', avg_loss[0] / avg_loss[1], count)
+				summary.add_scalar('loss/loss', loss, count)
+			# torch.save(model,save_path+'checkpoint_{}_{}.tar'.format(epoch,count))
 				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
 			# generator 진행
 			if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
-				sent = sample_sequence(model, tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
+				sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
 
 				print(sent)
 
-				now = [int(n) for n in os.listdir(samples)]
-				now = max(now)
-				f = open(samples + str(now + 1), 'w', encoding="utf-8")
-				f.write(sent)
-				f.close()
+				if count > 100000:
+					now = [int(n) for n in os.listdir(samples)]
+					now = max(now)
+					f = open(samples + str(now + 1), 'w', encoding="utf-8")
+					f.write(sent)
+					f.close()
 			#########################################
 			if (count > 0 and count % 10000 == 0) or (len(data) < batch_size):
 				# 모델 저장
@@ -172,10 +191,10 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 						'model_state_dict': model.state_dict(),
 						'optimizer_state_dict': optimizer.state_dict(),
 						'loss': loss
-					}, save_path+ 'KoGPT2_checkpoint_' + count + '.tar')
+					}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 				except:
 					pass
-		count += 1
+			count += 1
 
 if __name__ == "__main__":
 	# execute only if run as a script
@@ -186,4 +205,4 @@ if __name__ == "__main__":
 	data_file_path = args.data_file_path
 	batch_size = args.batch_size
 
-	main(epoch, save_path, load_path, data_file_path, batch_size)
+	main(epoch, save_path, load_path, samples, data_file_path, batch_size)

@@ -40,7 +40,7 @@ def toString(list):
     result = result + i
   return result
 
-class NovelDataset(Dataset):
+class Read_Dataset(Dataset):
   """web novel dataset"""
 
   def __init__(self, file_path,vocab,tokenizer):

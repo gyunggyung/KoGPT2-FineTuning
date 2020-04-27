@@ -1,12 +1,14 @@
 import torch
 import torch.nn.functional as F
 
+
 def top_k_logits(logits, k):
     if k == 0:
         return logits
     values, _ = torch.topk(logits, k)
     min_values = values[:, -1]
     return torch.where(logits < min_values, torch.ones_like(logits, dtype=logits.dtype) * -1e10, logits)
+
 
 def top_p_logits(logits, top_p=0.0, filter_value=-float('Inf')):
     """Nucleus sampling"""
@@ -25,7 +27,7 @@ def top_p_logits(logits, top_p=0.0, filter_value=-float('Inf')):
     return logits
 
 
-def sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top_k):
+def sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_k):
     toked = tok(sent)
     count = 0
     generated_text = ''
@@ -52,9 +54,9 @@ def sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top
         gen = vocab.to_tokens(prev.squeeze().tolist())
 
         # 끝나면 본격적으로 만들어 놓기.
-        if gen == '</s>' or count > input_size:
+        if gen == '</s>' or count > text_size:
             print('to_tokens:', vocab.to_tokens(torch.argmax(pred, axis=-1).squeeze().tolist()))
-            # if gen == '.' or count>input_size: # 이 조건을 바꿔야 겠다.
+            # if gen == '.' or count>text_size: # 이 조건을 바꿔야 겠다.
             sent += gen.replace('▁', ' ')
             generated_text += gen.replace('▁', ' ')
             sent += '\n'
@@ -63,7 +65,7 @@ def sample_sequence(model, tok, vocab, sent, input_size, temperature, top_p, top
             count = 0
             break
         # print('to_tokens:',vocab.to_tokens(torch.argmax(pred, axis=-1).squeeze().tolist()))
-        # if count >= input_size:
+        # if count >= text_size:
         #   break
         sent += gen.replace('▁', ' ')
         generated_text += gen.replace('▁', ' ')

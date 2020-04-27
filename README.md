@@ -60,8 +60,15 @@ Colab을 이용해서 generator를 실행할 수 있습니다.
 
 ![](img/colab_generator.JPG)
 
-## Citation
+## tensorboard
 ```
+tensorboard --logdir=runs
+```
+
+![](tensorboard.JPG)
+
+```
+## Citation
 @misc{KoGPT2-FineTuning,
   author = {gyung},
   title = {KoGPT2-FineTuning},
