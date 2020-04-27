@@ -166,7 +166,9 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 
 				print(sent)
 
-				if count > 100000:
+				summary.add_text('Text', sent, count)
+
+				if count > 500000:
 					now = [int(n) for n in os.listdir(samples)]
 					now = max(now)
 					f = open(samples + str(now + 1), 'w', encoding="utf-8")
