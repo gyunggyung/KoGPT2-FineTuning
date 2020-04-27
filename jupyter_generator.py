@@ -9,7 +9,6 @@ import gluonnlp
 
 def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1,
 	load_path = './checkpoint/KoGPT2_checkpoint_long.tar', ctx= 'cuda',cachedir='~/kogpt2/', samples="gdrive/drive/My Drive/KoGPT2-FineTuning/samples"):
-	# download model
 
 	pytorch_kogpt2 = {
 		'url': 'https://kobert.blob.core.windows.net/models/kogpt2/pytorch/pytorch_kogpt2_676e9bcfa7.params',
@@ -33,14 +32,15 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 						  model_info['fname'],
 						  model_info['chksum'],
 						  cachedir=cachedir)
-	# download vocab
+
 	vocab_info = tokenizer
 	vocab_path = download(vocab_info['url'],
 						  vocab_info['fname'],
 						  vocab_info['chksum'],
 						  cachedir=cachedir)
-	# Device 설정
+
 	device = torch.device(ctx)
+
 	# 저장한 Checkpoint 불러오기
 	checkpoint = torch.load(load_path, map_location=device)
 

@@ -9,10 +9,9 @@ import gluonnlp
 from kogpt2.model.sample import sample_sequence
 from tqdm import tqdm
 import subprocess
-import generator
 import os
 from tensorboardX import SummaryWriter
-
+import re
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -93,7 +92,6 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 	# model_path 로부터 다운로드 받은 내용을 load_state_dict 으로 업로드
 	kogpt2model.load_state_dict(torch.load(model_path))
 
-
 	device = torch.device(ctx)
 	kogpt2model.to(device)
 
@@ -107,8 +105,11 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 
 		kogpt2model.eval()
 	except:
-		pass
+		count = 0
+	else:
+		count = int(re.findall("\d+", load_path)[1])
 
+	print(count)
 	# 추가로 학습하기 위해 .train() 사용
 	kogpt2model.train()
 	vocab_b_obj = gluonnlp.vocab.BERTVocab.from_sentencepiece(vocab_path,
@@ -139,15 +140,6 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 
 	print('KoGPT-2 Transfer Learning Start')
 	avg_loss = (0.0, 0.0)
-	count = 0
-
-	torch.save({
-		'epoch': epoch,
-		'train_no': count,
-		'model_state_dict': model.state_dict(),
-		'optimizer_state_dict': optimizer.state_dict(),
-		'loss': 0
-	}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 
 	for epoch in range(epoch):
 		for data in data_loader:
@@ -167,10 +159,9 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 				print('epoch no.{0} train no.{1}  loss = {2:.5f} avg_loss = {3:.5f}' . format(epoch, count, loss, avg_loss[0] / avg_loss[1]))
 				summary.add_scalar('loss/avg_loss', avg_loss[0] / avg_loss[1], count)
 				summary.add_scalar('loss/loss', loss, count)
-			# torch.save(model,save_path+'checkpoint_{}_{}.tar'.format(epoch,count))
-				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
+
 			# generator 진행
-			if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
+			if (count > 0 and count % 1000 == 0) or (len(data) < batch_size):
 				sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
 
 				print(sent)
@@ -182,6 +173,8 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 					f.write(sent)
 					f.close()
 			#########################################
+			count += 1
+
 			if (count > 0 and count % 10000 == 0) or (len(data) < batch_size):
 				# 모델 저장
 				try:
@@ -194,15 +187,7 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 					}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 				except:
 					pass
-			count += 1
+
 
 if __name__ == "__main__":
-	# execute only if run as a script
-	epoch = args.epoch  # 학습 epoch
-	save_path = args.save_path
-	load_path = args.load_path
-	samples = args.samples
-	data_file_path = args.data_file_path
-	batch_size = args.batch_size
-
-	main(epoch, save_path, load_path, samples, data_file_path, batch_size)
+	main(args.epoch, args.save_path, args.load_path, args.samples, args.data_file_path, args.batch_size)

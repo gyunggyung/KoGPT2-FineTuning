@@ -9,7 +9,6 @@ import gluonnlp
 from kogpt2.model.sample import sample_sequence
 from tqdm import tqdm
 import subprocess
-import os
 
 def get_gpu_memory_map():
 	"""Get the current gpu usage.

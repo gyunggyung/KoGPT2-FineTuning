@@ -13,14 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import hashlib
-import os
-import sys
-
 import gluonnlp as nlp
-import requests
 import torch
-
 from .model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
 from .utils import download as _download
 from .utils import tokenizer

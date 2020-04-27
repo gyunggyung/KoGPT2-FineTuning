@@ -46,7 +46,6 @@ kogpt2_config = {
 	"vocab_size": 50000
 }
 
-
 def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1):
 	# download model
 	model_info = pytorch_kogpt2

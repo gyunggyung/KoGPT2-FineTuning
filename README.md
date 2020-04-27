@@ -65,7 +65,8 @@ Colab을 이용해서 generator를 실행할 수 있습니다.
 tensorboard --logdir=runs
 ```
 
-![](tensorboard.JPG)
+![](img/tensorboard.JPG)
+
 ## Citation
 ```
 @misc{KoGPT2-FineTuning,
