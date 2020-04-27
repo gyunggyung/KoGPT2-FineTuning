@@ -76,7 +76,12 @@ Colab을 이용해서 generator를 실행할 수 있습니다.
 자세한 결과물은 [samples](https://github.com/gyunggyung/KoGPT2-FineTuning/tree/master/samples)에서 확인 할 수 있습니다. 학습에 대해서는 [관련 포스팅](https://hipgyung.tistory.com/110)에서 확인할 수 있습니다.
 
 ## Reference
+> https://github.com/openai/gpt-2  
+> https://github.com/nshepperd/gpt-2  
 > https://github.com/SKT-AI/KoGPT2  
+> https://github.com/asyml/texar-pytorch/tree/master/examples/gpt-2  
+> https://github.com/graykode/gpt-2-Pytorch  
+> https://gist.github.com/thomwolf/1a5a29f6962089e871b94cbd09daf317  
 > https://github.com/shbictai/narrativeKoGPT2  
-> https://github.com/likejazz/korean-sentence-splitter  
 > https://github.com/ssut/py-hanspell
+> https://github.com/likejazz/korean-sentence-splitter  
