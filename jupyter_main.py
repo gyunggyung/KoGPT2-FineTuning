@@ -9,6 +9,8 @@ import gluonnlp
 from kogpt2.model.sample import sample_sequence
 from tqdm import tqdm
 import subprocess
+from tensorboardX import SummaryWriter
+import re
 
 def get_gpu_memory_map():
 	"""Get the current gpu usage.
@@ -33,6 +35,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8):
 	ctx = 'cuda'
 	cachedir = '~/kogpt2/'
+	summary = SummaryWriter()
 
 	pytorch_kogpt2 = {
 		'url': 'https://kobert.blob.core.windows.net/models/kogpt2/pytorch/pytorch_kogpt2_676e9bcfa7.params',
@@ -71,9 +74,9 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 
 	device = torch.device(ctx)
 	kogpt2model.to(device)
-
+	count = 0
 	# 불러오기 부분
-	if load_path:
+	try:
 		checkpoint = torch.load(load_path, map_location=device)
 
 		# KoGPT-2 언어 모델 학습을 위한 GPT2LMHeadModel 선언
@@ -81,6 +84,11 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 		kogpt2model.load_state_dict(checkpoint['model_state_dict'])
 
 		kogpt2model.eval()
+	except:
+		print("count 0 : ", load_path)
+	else:
+		print("count check : ",re.findall("\d+", load_path))
+		count = max([int(i) for i in (re.findall("\d+", load_path))])
 
 	# 추가로 학습하기 위해 .train() 사용
 	kogpt2model.train()
@@ -113,7 +121,6 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	print('KoGPT-2 Transfer Learning Start')
 	avg_loss = (0.0, 0.0)
 	for epoch in range(epoch):
-		count = 0
 		for data in data_loader:
 			optimizer.zero_grad()
 			data = torch.stack(data) # list of Tensor로 구성되어 있기 때문에 list를 stack을 통해 변환해준다.
@@ -128,15 +135,20 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 			optimizer.step()
 			if count % 10 == 0:
 				print('epoch no.{0} train no.{1}  loss = {2:.5f} avg_loss = {3:.5f}' . format(epoch, count, loss, avg_loss[0] / avg_loss[1]))
-				# torch.save(model,save_path+'checkpoint_{}_{}.tar'.format(epoch,count))
+				summary.add_scalar('loss/avg_loss', avg_loss[0] / avg_loss[1], count)
+				summary.add_scalar('loss/loss', loss, count)				# torch.save(model,save_path+'checkpoint_{}_{}.tar'.format(epoch,count))
 				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
 			# generator 진행
-			if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
-				sent = sample_sequence(model, tok, vocab, sent="사랑", input_size=100, temperature=0.7, top_p=0.8, top_k=40).to(ctx)
-				sent = "good"
-				print(sent)
+			#if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
+			#	try:
+			#		sent = sample_sequence(model.to('cpu'), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
+			#		print(sent)
+			#		summary.add_text('Text', sent, count)
+			#	except:
+			#		pass
+
 			#########################################
-			if (count > 0 and count % 10000 == 0) or (len(data) < batch_size):
+			if (count > 0 and count % 100000 == 0):
 				# 모델 저장
 				try:
 					torch.save({
