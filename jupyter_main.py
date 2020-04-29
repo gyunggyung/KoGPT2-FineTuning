@@ -153,10 +153,11 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 					sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
 					print(sent)
 					summary.add_text('Text', sent, count)
+					del sent
 					pass
 
 			#########################################
-			if (count > 0 and count % 40000 == 0):
+			if (count > 0 and count % 20000 == 0):
 				# 모델 저장
 				try:
 					torch.save({
