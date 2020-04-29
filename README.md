@@ -28,6 +28,34 @@ Colab을 이용해서 Fine-tuning Code를 실행할 수 있습니다.
 
 ![](img/colab_main.JPG)
 
+#### Runtime Disconnection Prevention
+``` javascript
+function ClickConnect() {
+    // 백엔드를 할당하지 못했습니다.
+    // GPU이(가) 있는 백엔드를 사용할 수 없습니다. 가속기가 없는 런타임을 사용하시겠습니까?
+    // 취소 버튼을 찾아서 클릭
+    var buttons = document.querySelectorAll("colab-dialog.yes-no-dialog paper-button#cancel"); 
+    buttons.forEach(function(btn) {
+		btn.click();
+    });
+    console.log("1분 마다 다시 연결");
+    document.querySelector("#top-toolbar > colab-connect-button").click();
+}
+setInterval(ClickConnect,1000*60);
+```
+
+#### Clear the screen every 10 minutes
+``` javascript
+function CleanCurrentOutput(){ 
+	var btn = document.querySelector(".output-icon.clear_outputs_enabled.output-icon-selected[title$='현재 실행 중...'] iron-icon[command=clear-focused-or-selected-outputs]");
+	if(btn) {
+		console.log("10분 마다 출력 지우기");
+		btn.click();
+	}
+} 
+setInterval(CleanCurrentOutput,1000*60*10);
+```
+
 ### GPU Memory Check
 ```
 nvidia-smi.exe

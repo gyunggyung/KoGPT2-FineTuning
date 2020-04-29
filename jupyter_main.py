@@ -32,10 +32,10 @@ def get_gpu_memory_map():
 	return gpu_memory_map
 
 def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoGPT2_checkpoint_long.tar',
-		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8):
+		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8, summary_url = 'runs/'):
 	ctx = 'cuda'
 	cachedir = '~/kogpt2/'
-	summary = SummaryWriter()
+	summary = SummaryWriter(summary_url)
 
 	pytorch_kogpt2 = {
 		'url': 'https://kobert.blob.core.windows.net/models/kogpt2/pytorch/pytorch_kogpt2_676e9bcfa7.params',
@@ -105,7 +105,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	model, vocab = kogpt2model, vocab_b_obj
 	sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
 
-	dataset = Read_Dataset(data_file_path, vocab,sentencepieceTokenizer)
+	dataset = Read_Dataset(data_file_path, vocab, sentencepieceTokenizer)
 	data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
 
 	learning_rate = 3e-5
@@ -126,6 +126,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 			data = torch.stack(data) # list of Tensor로 구성되어 있기 때문에 list를 stack을 통해 변환해준다.
 			data = data.transpose(1,0)
 			data = data.to(ctx)
+			model = model.to(ctx)
 
 			outputs = model(data, labels=data)
 			loss, logits = outputs[:2]
@@ -133,22 +134,29 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 			loss.backward()
 			avg_loss = (avg_loss[0] * 0.99 + loss, avg_loss[1] * 0.99 + 1.0)
 			optimizer.step()
+
 			if count % 10 == 0:
 				print('epoch no.{0} train no.{1}  loss = {2:.5f} avg_loss = {3:.5f}' . format(epoch, count, loss, avg_loss[0] / avg_loss[1]))
 				summary.add_scalar('loss/avg_loss', avg_loss[0] / avg_loss[1], count)
-				summary.add_scalar('loss/loss', loss, count)				# torch.save(model,save_path+'checkpoint_{}_{}.tar'.format(epoch,count))
-				# 추론 및 학습 재개를 위한 일반 체크포인트 저장하기
-			# generator 진행
-			#if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
-			#	try:
-			#		sent = sample_sequence(model.to('cpu'), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
-			#		print(sent)
-			#		summary.add_text('Text', sent, count)
-			#	except:
-			#		pass
+				summary.add_scalar('loss/loss', loss, count)
+				# print("save")
+				# torch.save({
+				# 	'epoch': epoch,
+				# 	'train_no': count,
+				# 	'model_state_dict': model.state_dict(),
+				# 	'optimizer_state_dict': optimizer.state_dict(),
+				# 	'loss': loss
+				# }, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
+
+				#generator 진행
+				if (count > 0 and count % 1000 == 0) or (len(data) < batch_size):
+					sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
+					print(sent)
+					summary.add_text('Text', sent, count)
+					pass
 
 			#########################################
-			if (count > 0 and count % 100000 == 0):
+			if (count > 0 and count % 40000 == 0):
 				# 모델 저장
 				try:
 					torch.save({
@@ -156,8 +164,8 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 						'train_no': count,
 						'model_state_dict': model.state_dict(),
 						'optimizer_state_dict': optimizer.state_dict(),
-						'loss':loss
-					}, save_path+ 'KoGPT2_checkpoint_' + count + '.tar')
+						'loss': loss
+					}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 				except:
 					pass
 			count += 1
