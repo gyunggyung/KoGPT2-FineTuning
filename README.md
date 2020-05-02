@@ -62,7 +62,11 @@ nvidia-smi.exe
 ```
 ## generator
 ```
-python generator.py --temperature=0.9 --text_size=500 --tmp_sent="" 
+python generator.py --temperature=1.0 --text_size=1000 --tmp_sent=""
+```
+#### 표절 없음
+```
+python generator.py --temperature=5.0 --text_size=500 --tmp_sent=""
 ```
 
 ### parser

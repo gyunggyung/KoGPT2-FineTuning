@@ -17,8 +17,8 @@ parser.add_argument('--top_k', type=int, default=40,
 					help="top_k 를 통해서 글의 표현 범위를 조절합니다.")
 parser.add_argument('--text_size', type=int, default=250,
 					help="결과물의 길이를 조정합니다.")
-parser.add_argument('--loops', type=int, default=0,
-					help="글을 몇 번 반복할지 지정합니다. 0은 무한반복입니다.")
+parser.add_argument('--loops', type=int, default=-1,
+					help="글을 몇 번 반복할지 지정합니다. -1은 무한반복입니다.")
 parser.add_argument('--tmp_sent', type=str, default="사랑",
 					help="글의 시작 문장입니다.")
 parser.add_argument('--load_path', type=str, default="./checkpoint/Alls/KoGPT2_checkpoint_296000.tar",
@@ -48,7 +48,7 @@ kogpt2_config = {
 	"vocab_size": 50000
 }
 
-def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1, load_path = ""):
+def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = 0, load_path = ""):
 	# download model
 	model_info = pytorch_kogpt2
 	model_path = download(model_info['url'],
@@ -107,10 +107,16 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 		now = [int(n) for n in os.listdir("./samples")]
 		now = max(now)
 		f = open("samples/" + str(now + 1), 'w', encoding="utf-8")
+		head = [load_path, tmp_sent, text_size, temperature, top_p, top_k]
+		head = [str(h) for h in head]
+		f.write(",".join(head))
+		f.write("\n")
 		f.write(sent)
 		f.close()
 
-		if num:
+		tmp_sent = ""
+
+		if num != 0:
 			num += 1
 			if num >= loops:
 				print("good")
