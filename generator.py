@@ -17,16 +17,18 @@ parser.add_argument('--top_k', type=int, default=40,
 					help="top_k 를 통해서 글의 표현 범위를 조절합니다.")
 parser.add_argument('--text_size', type=int, default=250,
 					help="결과물의 길이를 조정합니다.")
-parser.add_argument('--loops', type=int, default=-1,
-					help="글을 몇 번 반복할지 지정합니다. -1은 무한반복입니다.")
+parser.add_argument('--loops', type=int, default=0,
+					help="글을 몇 번 반복할지 지정합니다. 0은 무한반복입니다.")
 parser.add_argument('--tmp_sent', type=str, default="사랑",
 					help="글의 시작 문장입니다.")
+parser.add_argument('--load_path', type=str, default="./checkpoint/Alls/KoGPT2_checkpoint_296000.tar",
+					help="학습된 결과물을 저장하는 경로입니다.")
+
 args = parser.parse_args()
 
 ctx= 'cuda'
 cachedir='~/kogpt2/'
 save_path = './checkpoint/'
-load_path = './checkpoint/KoGPT2_checkpoint_long.tar'
 
 pytorch_kogpt2 = {
 	'url':
@@ -46,7 +48,7 @@ kogpt2_config = {
 	"vocab_size": 50000
 }
 
-def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1):
+def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1, load_path = ""):
 	# download model
 	model_info = pytorch_kogpt2
 	model_path = download(model_info['url'],
@@ -81,10 +83,11 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 	tok_path = get_tokenizer()
 	model, vocab = kogpt2model, vocab_b_obj
 	tok = SentencepieceTokenizer(tok_path)
-	num = 0
 
-	if loops != -1:
+	if loops:
 		num = 1
+	else:
+		num = 0
 
 	while 1:
 		sent =''
@@ -115,4 +118,4 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 
 if __name__ == "__main__":
 	# execute only if run as a script
-	main(temperature=args.temperature, top_p=args.top_p, top_k=args.top_k, tmp_sent=args.tmp_sent, text_size=args.text_size, loops=args.loops+1)
+	main(temperature=args.temperature, top_p=args.top_p, top_k=args.top_k, tmp_sent=args.tmp_sent, text_size=args.text_size, loops=args.loops+1, load_path=args.load_path)
