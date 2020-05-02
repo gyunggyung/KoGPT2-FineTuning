@@ -32,7 +32,7 @@ def get_gpu_memory_map():
 	return gpu_memory_map
 
 def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoGPT2_checkpoint_long.tar',
-		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8, summary_url = 'runs/'):
+		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8, summary_url = 'runs/', new = 0):
 	ctx = 'cuda'
 	cachedir = '~/kogpt2/'
 	summary = SummaryWriter(summary_url)
@@ -90,6 +90,8 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 		print("count check : ",re.findall("\d+", load_path))
 		count = max([int(i) for i in (re.findall("\d+", load_path))])
 
+	if new:
+		count = 0
 	# 추가로 학습하기 위해 .train() 사용
 	kogpt2model.train()
 	vocab_b_obj = gluonnlp.vocab.BERTVocab.from_sentencepiece(vocab_path,
@@ -157,7 +159,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 					pass
 
 			#########################################
-			if (count > 0 and count % 20000 == 0):
+			if (count > 0 and count % 18500 == 0):
 				# 모델 저장
 				try:
 					torch.save({
