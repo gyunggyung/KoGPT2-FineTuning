@@ -100,6 +100,7 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 			break
 
 		sent = sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_k)
+		sent = sent.replace("<unused0>", "\n") # 비효율적이지만 엔터를 위해서 등장
 
 		print(sent)
 

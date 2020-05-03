@@ -32,7 +32,7 @@ def get_gpu_memory_map():
 	return gpu_memory_map
 
 def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoGPT2_checkpoint_long.tar',
-		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8, summary_url = 'runs/', new = 0):
+		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8, summary_url = 'runs/', new = 0, text_size = 100):
 	ctx = 'cuda'
 	cachedir = '~/kogpt2/'
 	summary = SummaryWriter(summary_url)
@@ -152,7 +152,8 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 
 				#generator 진행
 				if (count > 0 and count % 1000 == 0) or (len(data) < batch_size):
-					sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=100, temperature=0.7, top_p=0.8, top_k=40)
+					sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=text_size, temperature=0.7, top_p=0.8, top_k=40)
+					sent = sent.replace("<unused0>", "\n") # 비효율적이지만 엔터를 위해서 등장
 					print(sent)
 					summary.add_text('Text', sent, count)
 					del sent
