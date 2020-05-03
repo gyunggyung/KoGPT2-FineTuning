@@ -4,7 +4,7 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 [![GitHub stars](https://img.shields.io/github/stars/gyunggyung/KoGPT2-FineTuning?style=social)](https://github.com/gyunggyung/KoGPT2-FineTuning)
 
-SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 사용했습니다. 첫 번째로 가사 작사를 위해서, 정제된 한국어 가사 데이터 62MB를 Fine-tuning 한 결과물입니다. 아래에서, 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. 
+SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 사용했습니다. 첫 번째로 가사 작사를 위해서, 정제된 한국어 가사 데이터 486MB를 Fine-tuning 한 결과물입니다. 아래에서, 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. 
 
 ## Fine Tuning
 ```
@@ -17,7 +17,7 @@ parser.add_argument('--epoch', type=int, default=200,
 					help="epoch 를 통해서 학습 범위를 조절합니다.")
 parser.add_argument('--save_path', type=str, default='./checkpoint/',
 					help="학습 결과를 저장하는 경로입니다.")
-parser.add_argument('--load_path', type=str, default='./checkpoint/Alls/KoGPT2_checkpoint_296000.tar', #
+parser.add_argument('--load_path', type=str, default='./checkpoint/Alls/KoGPT2_checkpoint_296000.tar', 
 					help="학습된 결과를 불러오는 경로입니다.")
 parser.add_argument('--samples', type=str, default="samples/",
 					help="생성 결과를 저장할 경로입니다.")
@@ -137,5 +137,5 @@ tensorboard --logdir=runs
 > https://github.com/graykode/gpt-2-Pytorch  
 > https://gist.github.com/thomwolf/1a5a29f6962089e871b94cbd09daf317  
 > https://github.com/shbictai/narrativeKoGPT2  
-> https://github.com/ssut/py-hanspell
+> https://github.com/ssut/py-hanspell  
 > https://github.com/likejazz/korean-sentence-splitter  

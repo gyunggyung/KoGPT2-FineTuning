@@ -29,15 +29,13 @@ parser.add_argument('--batch_size', type=int, default=8,
 					help="batch_size 를 지정합니다.")
 args = parser.parse_args()
 
-ctx = 'cuda'
-cachedir = '~/kogpt2/'
-
 pytorch_kogpt2 = {
 	'url':
 	'checkpoint/pytorch_kogpt2_676e9bcfa7.params',
 	'fname': 'pytorch_kogpt2_676e9bcfa7.params',
 	'chksum': '676e9bcfa7'
 }
+
 kogpt2_config = {
 	"initializer_range": 0.02,
 	"layer_norm_epsilon": 1e-05,
@@ -48,7 +46,6 @@ kogpt2_config = {
 	"n_positions": 1024,
 	"vocab_size": 50000
 }
-
 
 def get_gpu_memory_map():
 	"""Get the current gpu usage.
@@ -69,8 +66,10 @@ def get_gpu_memory_map():
 	gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
 	return gpu_memory_map
 
-
 def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
+	ctx = 'cuda'
+	cachedir = '~/kogpt2/'
+
 	summary = SummaryWriter()
 
 	# download model
@@ -189,7 +188,6 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 					}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 				except:
 					pass
-
 
 if __name__ == "__main__":
 	main(args.epoch, args.save_path, args.load_path, args.samples, args.data_file_path, args.batch_size)

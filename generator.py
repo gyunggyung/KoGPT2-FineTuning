@@ -26,10 +26,6 @@ parser.add_argument('--load_path', type=str, default="./checkpoint/Alls/KoGPT2_c
 
 args = parser.parse_args()
 
-ctx= 'cuda'
-cachedir='~/kogpt2/'
-save_path = './checkpoint/'
-
 pytorch_kogpt2 = {
 	'url':
 	'checkpoint/pytorch_kogpt2_676e9bcfa7.params',
@@ -49,6 +45,9 @@ kogpt2_config = {
 }
 
 def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = 0, load_path = ""):
+	ctx = 'cuda'
+	cachedir = '~/kogpt2/'
+	save_path = './checkpoint/'
 	# download model
 	model_info = pytorch_kogpt2
 	model_path = download(model_info['url'],
