@@ -122,20 +122,14 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 
 	tok_path = get_tokenizer()
 	model, vocab = kogpt2model, vocab_b_obj
-	sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
+	tok = SentencepieceTokenizer(tok_path)
 
-	dataset = Read_Dataset(data_file_path, vocab,sentencepieceTokenizer)
+	dataset = Read_Dataset(data_file_path, vocab, tok)
 	data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
 
 	learning_rate = 3e-5
 	criterion = torch.nn.CrossEntropyLoss()
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-
-	## train
-	tok_path = get_tokenizer()
-	model, vocab = kogpt2model, vocab_b_obj
-	model = model.to(ctx)
-	tok = SentencepieceTokenizer(tok_path)
 
 	print('KoGPT-2 Transfer Learning Start')
 	avg_loss = (0.0, 0.0)
