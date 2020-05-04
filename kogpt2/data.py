@@ -52,6 +52,7 @@ class Read_Dataset(Dataset):
 
 		lines = file.read()
 		lines = lines.split("<|endoftext|>")
+		lines = [line.split("\n") for line in lines]
 
 		datasets = []
 
@@ -60,9 +61,9 @@ class Read_Dataset(Dataset):
 			line = tokenizer(line)
 
 			while 1:
-				if len(line) > 1020:
-					datasets.append(line[:1020])
-					line = line[:1020]
+				if len(line) > 20:
+					datasets.append("\n".join(line[20:]))
+					line = line[:20]
 				else:
 					datasets.append(line)
 					break

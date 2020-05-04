@@ -161,7 +161,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 				# }, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 
 				#generator 진행
-				if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
+				if (count > 0 and count % 1000 == 0) or (len(data) < batch_size):
 					sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=text_size, temperature=0.7, top_p=0.8, top_k=40)
 					sent = sent.replace("<unused0>", "\n") # 비효율적이지만 엔터를 위해서 등장
 					sent = auto_enter(sent)
