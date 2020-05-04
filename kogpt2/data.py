@@ -17,18 +17,18 @@ def koGPT2Vocab():
 	# download vocab
 	vocab_info = tokenizer
 	vocab_path = download(vocab_info['url'],
-												vocab_info['fname'],
-												vocab_info['chksum'],
-												cachedir=cachedir)
+						vocab_info['fname'],
+						vocab_info['chksum'],
+						cachedir=cachedir)
 
 	koGPT2_vocab = gluonnlp.vocab.BERTVocab.from_sentencepiece(vocab_path,
-																														 mask_token=None,
-																														 sep_token=None,
-																														 cls_token=None,
-																														 unknown_token='<unk>',
-																														 padding_token='<pad>',
-																														 bos_token='<s>',
-																														 eos_token='</s>')
+															 mask_token=None,
+															 sep_token=None,
+															 cls_token=None,
+															 unknown_token='<unk>',
+															 padding_token='<pad>',
+															 bos_token='<s>',
+															 eos_token='</s>')
 	return koGPT2_vocab
 
 def toString(list):
@@ -51,24 +51,28 @@ class Read_Dataset(Dataset):
 		file = open(self.file_path, 'r', encoding='utf-8')
 
 		lines = file.read()
-		lines = lines.split("\n")
+		lines = lines.split("<|endoftext|>")
 
 		datasets = []
-		now = ""
-		for i, line in enumerate(lines):
-			if i % 20 == 0 and i != 0:
-				datasets.append(now)
-				now = ""
-			now = now + "\n" + line
-		# if len(line) > 1023:
-		#	 line = line[1023:]
-		#이거는 한줄단위인데;; 이 부분을 한
-		#while 1:
-		#	if line == "<|endoftext|>":
-		#		break
-		#	line += file.readline()
-		for line in datasets:
 
+		for i, line in enumerate(lines):
+			line = tokenizer(line)
+			while (1):
+				if len(line) > 1020:
+					datasets.append(line[:1020])
+					line = line[:1020]
+				else:
+					datasets.append(line)
+					break
+
+		#now = ""
+		#for i, line in enumerate(lines):
+		# 	if i % 20 == 0 and i != 0:
+		# 		datasets.append(now)
+		# 		now = ""
+		# 	now = now + "\n" + line
+
+		for line in datasets:
 			if not line:
 				break
 			if len(line) < 3:
