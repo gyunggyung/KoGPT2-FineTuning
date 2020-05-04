@@ -44,7 +44,6 @@ kogpt2_config = {
 	"vocab_size": 50000
 }
 
-
 def auto_enter(text):
 	text = (text.replace("   ", "\n"))
 	text = text.split("\n")

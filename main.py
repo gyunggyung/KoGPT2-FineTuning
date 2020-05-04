@@ -47,6 +47,13 @@ kogpt2_config = {
 	"vocab_size": 50000
 }
 
+def auto_enter(text):
+	text = (text.replace("   ", "\n"))
+	text = text.split("\n")
+
+	text = [t.lstrip() for t in text if t != '']
+	return "\n\n".join(text)
+
 def get_gpu_memory_map():
 	"""Get the current gpu usage.
 

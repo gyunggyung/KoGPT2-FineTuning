@@ -12,6 +12,13 @@ import subprocess
 from tensorboardX import SummaryWriter
 import re
 
+def auto_enter(text):
+	text = (text.replace("   ", "\n"))
+	text = text.split("\n")
+
+	text = [t.lstrip() for t in text if t != '']
+	return "\n\n".join(text)
+
 def get_gpu_memory_map():
 	"""Get the current gpu usage.
 
@@ -115,8 +122,11 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 	## train
-	tok_path = get_tokenizer()
-	model, vocab = kogpt2model, vocab_b_obj
+	# vocab.token_to_idx["\n"] = vocab.token_to_idx["<unused0>"]
+	# del vocab.token_to_idx["<unused0>"]
+	# vocab.token_to_idx["<|endoftext|>"] = vocab.token_to_idx["<unused1>"]
+	# del vocab.token_to_idx["<unused1>"]
+
 	model = model.to(ctx)
 	tok = SentencepieceTokenizer(tok_path)
 
@@ -151,9 +161,10 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 				# }, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 
 				#generator 진행
-				if (count > 0 and count % 1000 == 0) or (len(data) < batch_size):
+				if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
 					sent = sample_sequence(model.to("cpu"), tok, vocab, sent="사랑", text_size=text_size, temperature=0.7, top_p=0.8, top_k=40)
 					sent = sent.replace("<unused0>", "\n") # 비효율적이지만 엔터를 위해서 등장
+					sent = auto_enter(sent)
 					print(sent)
 					summary.add_text('Text', sent, count)
 					del sent

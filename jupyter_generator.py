@@ -7,6 +7,13 @@ from kogpt2.utils import download, tokenizer
 from kogpt2.model.torch_gpt2 import GPT2Config, GPT2LMHeadModel
 import gluonnlp
 
+def auto_enter(text):
+	text = (text.replace("   ", "\n"))
+	text = text.split("\n")
+
+	text = [t.lstrip() for t in text if t != '']
+	return "\n\n".join(text)
+
 def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 100, loops = -1,
 	load_path = './checkpoint/KoGPT2_checkpoint_long.tar', ctx= 'cuda',cachedir='~/kogpt2/', samples="gdrive/drive/My Drive/KoGPT2-FineTuning/samples"):
 
@@ -59,7 +66,11 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 															  eos_token='</s>')
 
 	tok_path = get_tokenizer()
+
 	model, vocab = kogpt2model, vocab_b_obj
+	vocab.token_to_idx["\n"] = vocab.token_to_idx["<unused0>"]
+	del vocab.token_to_idx["<unused0>"]
+
 	tok = SentencepieceTokenizer(tok_path)
 	num = 0
 
