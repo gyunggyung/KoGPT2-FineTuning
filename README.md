@@ -15,7 +15,7 @@ SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](htt
 
 ## Fine Tuning
 ```
-python main.py --epoch=200 --data_file_path='dataset/lyrics_dataset.txt' --save_path='./checkpoint/' --load_path='./checkpoint/KoGPT2_checkpoint_long.tar' --batch_size=8
+python main.py --epoch=200 --data_file_path=./dataset/All_make_lyrics_dataset.txt --save_path=./checkpoint/ --load_path=./checkpoint/auto_enter/KoGPT2_checkpoint_18500.tar --batch_size=8
 ```
 
 ### parser

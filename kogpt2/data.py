@@ -55,9 +55,11 @@ class Read_Dataset(Dataset):
 
 		datasets = []
 
-		for i, line in enumerate(lines):
+		print("tokenizer start")
+		for line in lines:
 			line = tokenizer(line)
-			while (1):
+
+			while 1:
 				if len(line) > 1020:
 					datasets.append(line[:1020])
 					line = line[:1020]
@@ -72,13 +74,14 @@ class Read_Dataset(Dataset):
 		# 		now = ""
 		# 	now = now + "\n" + line
 
+		print("tokenizer ending")
 		for line in datasets:
 			if not line:
 				break
 			if len(line) < 3:
 				continue
 
-			toeknized_line = tokenizer(line[:-1])
+			toeknized_line = line[:-1]
 
 			### 여기부터는 그대로
 			index_of_words = [vocab[vocab.bos_token],] + vocab[toeknized_line]+ [vocab[vocab.eos_token]]
