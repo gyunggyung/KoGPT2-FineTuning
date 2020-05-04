@@ -3,6 +3,9 @@
 [![license Apache-2.0](https://img.shields.io/badge/license-Apache2.0-red.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 [![GitHub stars](https://img.shields.io/github/stars/gyunggyung/KoGPT2-FineTuning?style=social)](https://github.com/gyunggyung/KoGPT2-FineTuning)
+[![GitHub forks](https://img.shields.io/github/forks/gyunggyung/KoGPT2-FineTuning?style=flat-square&color=informational)](https://github.com/gyunggyung/KoGPT2-FineTuning/network/members)
+[![GitHub watching](https://img.shields.io/github/watchers/gyunggyung/KoGPT2-FineTuning?style=flat-square&color=ff69b4)](https://github.com/gyunggyung/KoGPT2-FineTuning/blob/master/watchers)
+[![GitHub issues](https://img.shields.io/github/issues/gyunggyung/KoGPT2-FineTuning?style=flat-square&color=red)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 
 SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 사용했습니다. 첫 번째로 가사 작사를 위해서, 정제된 한국어 가사 데이터 486MB를 Fine-tuning 한 결과물입니다. 아래에서, 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. 
 
