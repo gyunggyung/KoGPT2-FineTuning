@@ -2,9 +2,9 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1qfL-IUp4k0uzkr_6SIaAmS_PA_Luvt1t)
 [![license Apache-2.0](https://img.shields.io/badge/license-Apache2.0-red.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
-[![GitHub forks](https://img.shields.io/github/forks/gyunggyung/KoGPT2-FineTuning?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/network/members)
-[![GitHub watching](https://img.shields.io/github/watchers/gyunggyung/KoGPT2-FineTuning?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/blob/master/watchers)
-[![GitHub issues](https://img.shields.io/github/issues/gyunggyung/KoGPT2-FineTuning?style=flat)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
+[![GitHub forks](https://img.shields.io/github/forks/gyunggyung/KoGPT2-FineTuning?style=flat&color=yellowgreen)](https://github.com/gyunggyung/KoGPT2-FineTuning/network/members)
+[![GitHub watching](https://img.shields.io/github/watchers/gyunggyung/KoGPT2-FineTuning?style=flat&color=orange)](https://github.com/gyunggyung/KoGPT2-FineTuning/blob/master/watchers)
+[![GitHub issues](https://img.shields.io/github/issues/gyunggyung/KoGPT2-FineTuning?style=flat&color=yellow)](https://github.com/gyunggyung/KoGPT2-FineTuning/issues)
 [![GitHub stars](https://img.shields.io/github/stars/gyunggyung/KoGPT2-FineTuning?style=social)](https://github.com/gyunggyung/KoGPT2-FineTuning)
 
 
