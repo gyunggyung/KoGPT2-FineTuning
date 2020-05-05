@@ -51,25 +51,43 @@ class Read_Dataset(Dataset):
 		file = open(self.file_path, 'r', encoding='utf-8')
 
 		lines = file.read()
-		lines = lines.split("<|endoftext|>")
-		lines = [line.split("\n") for line in lines]
+		lines = lines.split("\n")
 
 		datasets = []
+		now = ""
+		for i, line in enumerate(lines):
+			if i % 30 == 0 and i != 0:
+				datasets.append(now)
+				now = ""
+			now = now + "\n" + line
 
-		print("tokenizer start")
-		for line in lines:
-			line = tokenizer(line)
+		# lines = lines.split("<|endoftext|>")
+		# lines = [line.split("\n") for line in lines]
+		# lines = [str(line) for line in lines]
+		#
+		# datasets = []
+		#
+		# print("tokenizer start")
+		# for line in lines:
+		# 	now = ""
+		# 	for i, l in enumerate(line):
+		# 		if i % 20 == 0 and i != 0:
+		# 			datasets.append(now)
+		# 			now = ""
+		# 		now = now + "\n" + l
+		# 		if i == len(line) - 1:
+		# 			datasets.append(now)
 
-			while 1:
-				if len(line) > 20:
-					datasets.append("\n".join(line[20:]))
-					line = line[:20]
-				else:
-					datasets.append(line)
-					break
+			# while 1:
+			# 	if len(line) > 20:
+			# 		datasets.append("\n".join(line[20:]))
+			# 		line = line[:20]
+			# 	else:
+			# 		datasets.append(line)
+			# 		break
 
-		#now = ""
-		#for i, line in enumerate(lines):
+		# now = ""
+		# for i, line in enumerate(lines):
 		# 	if i % 20 == 0 and i != 0:
 		# 		datasets.append(now)
 		# 		now = ""
@@ -82,7 +100,7 @@ class Read_Dataset(Dataset):
 			if len(line) < 3:
 				continue
 
-			toeknized_line = line[:-1]
+			toeknized_line = tokenizer(line[:-1])
 
 			### 여기부터는 그대로
 			index_of_words = [vocab[vocab.bos_token],] + vocab[toeknized_line]+ [vocab[vocab.eos_token]]
