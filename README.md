@@ -114,7 +114,6 @@ tensorboard --logdir=runs
 
 ### loss
 ![](img/tensorboard_avg.JPG)  
-![](img/tensorboard_loss.JPG)
 
 ### text
 ![](img/tensorboard_text.JPG)
