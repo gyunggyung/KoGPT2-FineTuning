@@ -10,7 +10,6 @@ def sentencePieceTokenizer():
 	sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
 	return sentencepieceTokenizer
 
-
 def koGPT2Vocab():
 	cachedir = '~/kogpt2/'
 
@@ -58,10 +57,6 @@ class Read_Dataset(Dataset):
 		datasets = []
 		for _, row in df.iterrows():
 			datasets.append([row["lyrics"], row["genre"], row["score"]])
-		#print("되긴하냐?")
-		# lines = lines.split("<|endoftext|>")
-		# lines = [line.split("\n") for line in lines]
-		# lines = [str(line) for line in lines]
 
 		print("tokenizer ending")
 		for line in datasets:
@@ -69,12 +64,14 @@ class Read_Dataset(Dataset):
 				break
 			if len(line[0]) < 3:
 				continue
-			#print("너까지는 되면 좋은데")
 			toeknized_line = tokenizer(line[0][:-1])
 
 			index_of_words = [vocab[vocab.bos_token], ] + vocab[toeknized_line] + [vocab[vocab.eos_token]]
+
+			if len(index_of_words) > 1024:
+				continue
+
 			self.data.append([index_of_words, line[1], line[2]])
-			#print("그치?")
 
 		print(np.shape(self.data))
 

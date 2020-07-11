@@ -13,6 +13,7 @@ import os
 from tensorboardX import SummaryWriter
 import re
 import argparse
+import copy
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=200,
@@ -162,18 +163,21 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 			loss, logits = outputs[:2]
 			#print(loss)
 			#print(datas[2])
-			loss *= datas[2][0] # socre 부분
 
+			nowloss = copy.copy(loss)
+			avg_loss = (avg_loss[0] * 0.99 + nowloss, avg_loss[1] * 0.99 + 1.0)
+
+			loss *= datas[2][0] # socre 부분
 
 			loss = loss.to(ctx)
 
 			loss.backward()
-			avg_loss = (avg_loss[0] * 0.99 + loss, avg_loss[1] * 0.99 + 1.0)
+
 			optimizer.step()
 			if count % 10 == 0:
-				print('epoch no.{0} train no.{1}  loss = {2:.5f} avg_loss = {3:.5f}' . format(epoch, count, loss, avg_loss[0] / avg_loss[1]))
+				print('epoch no.{0} train no.{1}  loss = {2:.5f} avg_loss = {3:.5f}' . format(epoch, count, nowloss, avg_loss[0] / avg_loss[1]))
 				summary.add_scalar('loss/avg_loss', avg_loss[0] / avg_loss[1], count)
-				summary.add_scalar('loss/loss', loss, count)
+				summary.add_scalar('loss/loss', nowloss, count)
 
 			# generator 진행
 			if (count > 0 and count % 1000 == 0) or (len(data) < batch_size):
@@ -201,7 +205,7 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 						'train_no': count,
 						'model_state_dict': model.state_dict(),
 						'optimizer_state_dict': optimizer.state_dict(),
-						'loss': loss
+						'loss': nowloss
 					}, save_path + 'KoGPT2_checkpoint_' + str(count) + '.tar')
 				except:
 					pass
