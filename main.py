@@ -137,6 +137,7 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 	data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
 
 
+	# 여기서부터 바꾸기가 필요...
 
 	learning_rate = 3e-5
 	criterion = torch.nn.CrossEntropyLoss()
@@ -146,16 +147,26 @@ def main(epoch, save_path, load_path, samples, data_file_path, batch_size):
 	avg_loss = (0.0, 0.0)
 
 	for epoch in range(epoch):
-		for data in data_loader:
+		for datas in data_loader:
 			optimizer.zero_grad()
+
+			data = datas[0] #lyrics 부분
+
 			data = torch.stack(data) # list of Tensor로 구성되어 있기 때문에 list를 stack을 통해 변환해준다.
+
 			data = data.transpose(1,0)
 			data = data.to(ctx)
 			model = model.to(ctx)
 
 			outputs = model(data, labels=data)
 			loss, logits = outputs[:2]
+			#print(loss)
+			#print(datas[2])
+			loss *= datas[2][0] # socre 부분
+
+
 			loss = loss.to(ctx)
+
 			loss.backward()
 			avg_loss = (avg_loss[0] * 0.99 + loss, avg_loss[1] * 0.99 + 1.0)
 			optimizer.step()
