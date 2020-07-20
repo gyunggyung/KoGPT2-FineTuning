@@ -32,7 +32,7 @@ def sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_
     count = 0
     generated_text = ''
 
-    if len(toked) > 1022:
+    if len(toked) > 1024:
         return 0
 
     while 1:  # 이부분도 적절하게 바꾸기.
@@ -54,8 +54,10 @@ def sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_
         gen = vocab.to_tokens(prev.squeeze().tolist())
 
         # 끝나면 본격적으로 만들어 놓기.
-        if gen == '</s>' or gen == '|' or count > text_size:
+        if gen == '</s>' or count > text_size:
+            print(count)
             print('to_tokens:', vocab.to_tokens(torch.argmax(pred, axis=-1).squeeze().tolist()))
+            #print(sent)
             sent += gen.replace('▁', ' ')
             generated_text += gen.replace('▁', ' ')
             sent += '\n'

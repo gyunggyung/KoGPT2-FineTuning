@@ -6,10 +6,21 @@
 [![GitHub stars](https://img.shields.io/github/stars/gyunggyung/KoGPT2-FineTuning?style=social)](https://github.com/gyunggyung/KoGPT2-FineTuning)
 
 
-SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 사용했습니다. 첫 번째로 가사 작사를 위해서, 정제된 한국어 가사 데이터 486MB를 Fine-tuning 한 결과물입니다. 아래에서, 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. 우리는 이외에도 다양한 프로젝트를 진행할 것입니다.
+SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 사용했습니다. 첫 번째로 가사 작사를 위해서, 정제된 한국어 가사 데이터 약 20만 개 정도를 Fine-tuning 하였습니다. 또한 각 가사별로 weight를 줄 수 있습니다. 히트곡의 경우 더 많은 weight를 주며 학습했습니다. 또한 장르도 받아서 음악 장르별 가사 학습 결과를 볼 수 있습니다.
+
+또한 Colab에서는 원활한 학습을 위해서 Google Drive와 [Dropbbox](https://www.dropbox.com/h)을 연동했습니다. 학습한 중간 결과를 Google Drive에서 Dropbbox로 이동시킨 후, Google Drive에서 해당 결과를 삭제하게 합니다. 이와 관련된 [Code](https://github.com/gyunggyung/KoGPT2-FineTuning/blob/master/jupyter_main.py)
+
+아래에서, 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. 우리는 이외에도 다양한 프로젝트를 진행할 것입니다. 
 
 ## Sample
 ![](img/outputs.JPG)  
+
+## Data structure
+|weight|Genre|lyrics|
+|---|---|---|
+|1100.0|발라드|'내 맘을 알잖아요\n\n\n바로처럼 멍하니 서 있는 모습만\n\n\n바라보다\n\n\n포기할 수 밖에 없어서...'|
+...
+##### 3x200000
 
 ## Fine Tuning
 ```

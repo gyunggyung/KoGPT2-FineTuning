@@ -3,7 +3,7 @@ from kogpt2.utils import download, tokenizer, get_tokenizer
 from gluonnlp.data import SentencepieceTokenizer
 import gluonnlp
 import numpy as np
-
+import pandas as pd
 
 def sentencePieceTokenizer():
 	tok_path = get_tokenizer()
@@ -50,36 +50,32 @@ class Read_Dataset(Dataset):
 		self.tokenizer = tokenizer
 		file = open(self.file_path, 'r', encoding='utf-8')
 
-		lines = file.read()
-		lines = lines.split("\n")
+		df = pd.read_csv(self.file_path)
 
 		datasets = []
-		now = ""
-		for i, line in enumerate(lines):
-			if i % 30 == 0 and i != 0:
-				datasets.append(now)
-				now = ""
-			now = now + "\n" + line
-
-		# lines = lines.split("<|endoftext|>")
-		# lines = [line.split("\n") for line in lines]
-		# lines = [str(line) for line in lines]
-
+		for _, row in df.iterrows():
+			datasets.append([row["lyrics"], row["genre"], row["score"]])
+			
 		print("tokenizer ending")
 		for line in datasets:
-			if not line:
+			if not line[0]:
 				break
-			if len(line) < 3:
+			if len(line[0]) < 3:
 				continue
-
-			toeknized_line = tokenizer(line[:-1])
+			toeknized_line = tokenizer(line[0][:-1])
 
 			index_of_words = [vocab[vocab.bos_token], ] + vocab[toeknized_line] + [vocab[vocab.eos_token]]
-			self.data.append(index_of_words)
+
+			if len(index_of_words) > 1024:
+				continue
+			elif len(index_of_words) < 100:
+				continue
+
+			#print(len(index_of_words))	
+			#print(line)
+			self.data.append([index_of_words, line[1], line[2]])
 
 		print(np.shape(self.data))
-
-		file.close()
 
 	def __len__(self):
 		return len(self.data)

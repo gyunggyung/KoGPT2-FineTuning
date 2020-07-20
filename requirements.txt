@@ -1,7 +1,8 @@
-gluonnlp >= 0.8.3
-mxnet
-sentencepiece >= 0.1.6
-torch >= 1.4.0
-transformers >= 2.1.1
+mxnet == 1.6.0
 tqdm
-tensorboardX 
+gluonnlp == 0.8.3
+sentencepiece == 0.1.6
+torch == 1.5.1
+transformers == 2.1.1
+tensorboardX
+dropbox
