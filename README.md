@@ -10,6 +10,8 @@ SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](htt
 
 또한 Colab에서는 원활한 학습을 위해서 Google Drive와 [Dropbbox](https://www.dropbox.com/h)을 연동했습니다. 학습한 중간 결과를 Google Drive에서 Dropbbox로 이동시킨 후, Google Drive에서 해당 결과를 삭제하게 합니다. 이와 관련된 [Code](https://github.com/gyunggyung/KoGPT2-FineTuning/blob/master/jupyter_main.py)
 
+음악 장르별로, CSV 형식의 Dataset을 받는 바뀐 Version 2의 Code로 KoGPT2-FineTuning 작업을 하기 어렵다면, [Version 1.1](https://github.com/forus-ai/KoGPT2-FineTuning)을 이용하길 바랍니다.
+
 아래에서, 다양한 한국어 가사를 학습한 결과를 확인 할 수 있습니다. 우리는 이외에도 다양한 프로젝트를 진행할 것입니다. 
 
 ## Sample
@@ -24,7 +26,7 @@ SKT-AI에서 약 20GB의 한국어 데이터를 Pre-Training 시킨 [KoGPT2](htt
 
 ## Fine Tuning
 ```
-python main.py --epoch=200 --data_file_path=./dataset/All_make_lyrics_dataset.txt --save_path=./checkpoint/ --load_path=./checkpoint/auto_enter/KoGPT2_checkpoint_18500.tar --batch_size=8
+python main.py --epoch=200 --data_file_path=./dataset/lyrics_dataset.csv --save_path=./checkpoint/ --load_path=./checkpoint/genre/KoGPT2_checkpoint_296000.tar --batch_size=1
 ```
 
 ### parser
