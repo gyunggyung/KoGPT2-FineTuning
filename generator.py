@@ -95,6 +95,18 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 	else:
 		num = 0
 
+	try:
+		load_path.split("/")[-2]
+	except:
+		pass
+	else:
+		load_path = load_path.split("/")[-2]
+
+	print("ok : ",load_path)
+
+	if not(os.path.isdir("samples/"+ load_path)):
+		os.makedirs(os.path.join("samples/"+ load_path))
+
 	while 1:
 		sent =''
 		if tmp_sent == "":
@@ -107,21 +119,28 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 			break
 
 		sent = sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_k)
-		sent = sent.replace("<unused0>", "\n") # 비효율적이지만 엔터를 위해서 등장
+		sent = sent.replace("//", "\n") # 비효율적이지만 엔터를 위해서 등장
+		sent = sent.replace("</s>", "") 
 		sent = auto_enter(sent)
 		print(sent)
 
-		now = [int(n) for n in os.listdir("./samples")]
-		now = max(now)
-		f = open("samples/" + str(now + 1), 'w', encoding="utf-8")
+		now = [int(n) for n in os.listdir("./samples/" + load_path)]
+		
+		try:
+			now = max(now)
+		except:
+			now = 1
+
+		f = open("samples/"+ load_path + "/" + str(now + 1), 'w', encoding="utf-8")
+		
 		head = [load_path, tmp_sent, text_size, temperature, top_p, top_k]
 		head = [str(h) for h in head]
 		f.write(",".join(head))
-		f.write("\n")
+		f.write(",")
 		f.write(sent)
 		f.close()
 
-		tmp_sent = ""
+		#tmp_sent = ""
 
 		if num != 0:
 			num += 1
