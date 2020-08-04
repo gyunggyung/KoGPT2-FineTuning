@@ -70,7 +70,7 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 	model, vocab = kogpt2model, vocab_b_obj
 	tok = SentencepieceTokenizer(tok_path)
 	num = 0
-	print("문제1")
+
 	if loops:
 		num = 1
 	else:
@@ -83,24 +83,22 @@ def main(temperature = 0.7, top_p = 0.8, top_k = 40, tmp_sent = "", text_size = 
 	else:
 		load_path = load_path.split("/")[-2]
 
-	print("문제2")
-	print("ok : ",load_path)
+	print("ok : ", load_path)
 
-	print("문제3")
 	while 1:
 		sent =''
 		if tmp_sent == "":
 			tmp_sent = input('input : ')
-		sent = sent+tmp_sent
+		sent = sent + tmp_sent
 
 		toked = tok(sent)
 
 		if len(toked) > 1022:
 			break
-		
-		print("문제4")
 
+		# 실제 생성 코드 top_x 상위 x개 만 사전에서 가져오기
 		sent = sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_k)
+
 		sent = sent.replace("//", "\n") # 비효율적이지만 엔터를 위해서 등장
 		sent = sent.replace("</s>", "") 
 		sent = auto_enter(sent)

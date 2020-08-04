@@ -28,7 +28,10 @@ def top_p_logits(logits, top_p=0.0, filter_value=-float('Inf')):
 
 
 def sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_k):
-    toked = tok(sent)
+    ctx = 'cuda'
+    device = torch.device(ctx)
+
+    toked = tok(sent) # 받은 문장
     count = 0
     generated_text = ''
 
@@ -36,11 +39,16 @@ def sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_
         return 0
 
     while 1:  # 이부분도 적절하게 바꾸기.
+        # 시작 토큰 넣기
         input_ids = torch.tensor([vocab[vocab.bos_token], ] + vocab[toked]).unsqueeze(0)
+
+        input_ids = input_ids.to(ctx)
+        model = model.to(ctx)
+
         predicts = model(input_ids)
         pred = predicts[0]
 
-        # temper
+        # temperature 적용
         logits = pred
         logits = logits[:, -1, :] / temperature
         # top k
@@ -48,9 +56,13 @@ def sample_sequence(model, tok, vocab, sent, text_size, temperature, top_p, top_
         # top p
         logits = top_p_logits(logits, top_p=top_p)
 
-        log_probs = F.softmax(logits, dim=-1)
-        prev = torch.multinomial(log_probs, num_samples=1)
+        #logits = logits.to(ctx)
 
+        # 확률적을 뽑고
+        log_probs = F.softmax(logits, dim=-1)
+        # 이전 것들 저장해서 다음 학습에 사용
+        prev = torch.multinomial(log_probs, num_samples=1)
+        # 결과 나오게 (사전에서 gpt2가 뽑은 결과)
         gen = vocab.to_tokens(prev.squeeze().tolist())
 
         # 끝나면 본격적으로 만들어 놓기.

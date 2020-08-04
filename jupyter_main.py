@@ -22,6 +22,7 @@ from oauth2client.client import GoogleCredentials
 import os
 import sys
 
+#드롭 박스를 이용하기 위해서 쓰는 코드 드롭박스 2T를 쓰기 위해서 선언
 auth.authenticate_user()
 gauth = GoogleAuth()
 gauth.credentials = GoogleCredentials.get_application_default()
@@ -64,7 +65,8 @@ def get_gpu_memory_map():
 	return gpu_memory_map
 
 def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoGPT2_checkpoint_long.tar',
-		data_file_path = 'dataset/lyrics_dataset.txt', batch_size = 8, summary_url = 'runs/', new = 0, text_size = 1020):
+		 data_file_path = 'dataset/lyrics_dataset.txt',
+		 batch_size = 8, summary_url = 'runs/', new = 0, text_size = 100):
 	ctx = 'cuda'
 	cachedir = '~/kogpt2/'
 	summary = SummaryWriter(summary_url)
@@ -102,12 +104,14 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	kogpt2model = GPT2LMHeadModel(config=GPT2Config.from_dict(kogpt2_config))
 
 	# model_path 로부터 다운로드 받은 내용을 load_state_dict 으로 업로드
+	# 기본 모델에서 가져오는 파라미터 업데이트
 	kogpt2model.load_state_dict(torch.load(model_path))
 
-	device = torch.device(ctx)
+	device = torch.device(ctx) #GPU
 	kogpt2model.to(device)
 	count = 0
-	# 불러오기 부분
+
+	# 체크포인트에서 불러오기 부분
 	try:
 		checkpoint = torch.load(load_path, map_location=device)
 
@@ -124,6 +128,7 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 
 	if new:
 		count = 0
+
 	# 추가로 학습하기 위해 .train() 사용
 	kogpt2model.train()
 	vocab_b_obj = gluonnlp.vocab.BERTVocab.from_sentencepiece(vocab_path,
@@ -139,34 +144,33 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 	model, vocab = kogpt2model, vocab_b_obj
 	sentencepieceTokenizer = SentencepieceTokenizer(tok_path)
 
+	# 우리의 데이터셋 불러오는 부분
 	dataset = Read_Dataset(data_file_path, vocab, sentencepieceTokenizer)
 	data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
 
+	# 체크
 	learning_rate = 3e-5
 	criterion = torch.nn.CrossEntropyLoss()
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-	## train
-	# vocab.token_to_idx["\n"] = vocab.token_to_idx["<unused0>"]
-	# del vocab.token_to_idx["<unused0>"]
-	# vocab.token_to_idx["<|endoftext|>"] = vocab.token_to_idx["<unused1>"]
-	# del vocab.token_to_idx["<unused1>"]
-
 	model = model.to(ctx)
+	# bpe로 할 때 나누고 합치고 하는 과정이 편해짐.
 	tok = SentencepieceTokenizer(tok_path)
 
 	print('KoGPT-2 Transfer Learning Start')
 
+	# 장르별로 체크포인트 폴더 없으면 생성하기
 	try:
-	    if not(os.path.isdir(save_path + data_file_path.split("/")[-1][:-4])):
-	        os.makedirs(os.path.join(save_path + data_file_path.split("/")[-1][:-4]))
+		if not(os.path.isdir(save_path + data_file_path.split("/")[-1][:-4])):
+			os.makedirs(os.path.join(save_path + data_file_path.split("/")[-1][:-4]))
 	except OSError as e:
-	    if e.errno != errno.EEXIST:
-	        print("Failed to create directory!!!!!")
-	        raise
+		if e.errno != errno.EEXIST:
+			print("Failed to create directory!!!!!")
+			raise
 	
 	avg_loss = (0.0, 0.0)
 	for epoch in range(epoch):
+		# 데이터셋 가져와서 학습 시작
 		for datas in data_loader:
 			data = datas[0]
 
@@ -176,17 +180,20 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 			data = data.to(ctx)
 			model = model.to(ctx)
 
+			# 실제 학습
 			outputs = model(data, labels=data)
 			loss, logits = outputs[:2]
 
 			nowloss = copy.copy(loss)
+			# 평균 loss 만들기 avg_loss[0] / avg_loss[1] <- loss 정규화
 			avg_loss = (avg_loss[0] * 0.99 + loss, avg_loss[1] * 0.99 + 1.0)
 
-			loss *= datas[2][0] # socre 부분
+			loss *= datas[2][0] # 특별 socre 부분
 
 			loss = loss.to(ctx)
 			loss.backward()
 
+			# 학습 끝
 			optimizer.step()
 
 			if count % 10 == 0:
@@ -368,6 +375,5 @@ def main(epoch = 200, save_path = './checkpoint/', load_path = './checkpoint/KoG
 					a_file.Delete()
 
 				return
-
 
 			count += 1
